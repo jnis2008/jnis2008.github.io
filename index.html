@@ -2,7 +2,6 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <!-- 針對手機與 IG 內建瀏覽器鎖定縮放與邊界，避免 UI 被拉大 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>jnis2008</title>
   <!-- 導入方正幾何風格字體 Press Start 2P -->
@@ -48,7 +47,6 @@
       background-color: var(--bg-color);
       color: var(--text-color);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      /* 修正 IG 瀏覽器 100vh 擠壓問題：優先使用 100svh */
       min-height: 100vh;
       min-height: 100svh;
       display: flex;
@@ -57,7 +55,7 @@
       overflow-x: hidden;
       position: relative;
       transition: background-color 0.4s ease, color 0.4s ease;
-      padding: 0 20px;
+      padding: 40px 20px;
     }
 
     /* ===== 左上角切換主題按鈕 ===== */
@@ -120,8 +118,17 @@
       text-align: center;
       width: 100%;
       max-width: 1000px;
+      height: 100%;
+      min-height: calc(100vh - 80px);
+      min-height: calc(100svh - 80px);
       z-index: 1;
       position: relative;
+    }
+
+    /* 第二頁開啟時調整容器佈局為上下推開 */
+    .container.page-two {
+      justify-content: space-between;
+      padding-top: 60px;
     }
 
     /* 首頁打字標題 */
@@ -201,7 +208,7 @@
       gap: 32px;
       width: 100%;
       max-width: 480px;
-      margin-bottom: 110px;
+      margin: auto 0;
     }
 
     .links-menu.active {
@@ -311,6 +318,8 @@
       flex-direction: column;
       align-items: center;
       width: 100%;
+      margin-top: auto;
+      padding-bottom: 10px;
     }
 
     .inquiry-text {
@@ -391,6 +400,19 @@
        📱 手機端 / Instagram 內建瀏覽器專用優化
     ========================================== */
     @media (max-width: 768px) {
+      body {
+        padding: 20px 15px;
+      }
+
+      .container {
+        min-height: calc(100vh - 40px);
+        min-height: calc(100svh - 40px);
+      }
+
+      .container.page-two {
+        padding-top: 45px;
+      }
+
       .theme-toggle-btn {
         top: 15px;
         left: 15px;
@@ -409,7 +431,6 @@
         margin-bottom: 25px;
       }
 
-      /* 針對 IG 內建瀏覽器再微調小字體，防止文字過寬 */
       .typewriter {
         font-size: 2.1rem;
         border-right-width: 3px;
@@ -430,7 +451,6 @@
       .links-menu {
         gap: 15px;
         max-width: 260px;
-        margin-bottom: 35px;
       }
 
       .white-box {
@@ -448,6 +468,10 @@
         height: 35px;
         font-size: 0.75rem;
         border-width: 2px;
+      }
+
+      .inquiry-wrapper {
+        padding-bottom: 5px;
       }
 
       .inquiry-text {
@@ -497,7 +521,7 @@
   <!-- 右上角固定標題 jnis -->
   <div class="top-right-logo" id="topLogo">jnis</div>
 
-  <div class="container">
+  <div class="container" id="mainContainer">
     <!-- 首頁標題 -->
     <div class="typewriter-wrapper" id="homeTitle">
       <h1 class="typewriter">jnis</h1>
@@ -545,6 +569,7 @@
     const themeToggleBtn = document.getElementById('themeToggleBtn');
     const ytWrapper = document.getElementById('ytWrapper');
     const ytTrigger = document.getElementById('ytTrigger');
+    const mainContainer = document.getElementById('mainContainer');
 
     let isSecondPage = false;
     let toastTimeout;
@@ -561,6 +586,7 @@
         homeTitle.style.display = 'none';
         btnJnii.style.display = 'none';
 
+        mainContainer.classList.add('page-two');
         linksMenu.classList.add('active');
 
         requestAnimationFrame(() => {
