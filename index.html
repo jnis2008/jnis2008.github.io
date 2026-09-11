@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>jnis2008</title>
-  <!-- 導入美化手寫字體 -->
+  <!-- 導入方正幾何風格字體 Press Start 2P -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
     /* 全局樣式 */
     * {
@@ -37,32 +37,32 @@
       max-width: 800px;
     }
 
-    /* 1. 打字機動畫美化文字 (jnis) */
+    /* 1. 小寫、方正、流暢打字效果 (jnis) */
     .typewriter-wrapper {
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-bottom: 35px;
+      margin-bottom: 40px;
     }
 
     .typewriter {
-      font-family: 'Permanent Marker', cursive, cursive-style;
-      font-size: 5rem;
-      letter-spacing: 6px;
+      font-family: 'Press Start 2P', monospace, sans-serif;
+      font-size: 3.5rem;
+      text-transform: lowercase; /* 強制小寫 */
       color: #ffffff;
       white-space: nowrap;
       overflow: hidden;
       border-right: 4px solid #ffffff; /* 打字機游標 */
       width: 0;
-      /* 1.2 秒快速打字完成，游標打完後消失 */
+      /* 0.8 秒流暢逐字展開，游標保持閃爍 */
       animation: 
-        typing 1.2s steps(4, end) forwards,
-        blink-caret 0.6s step-end 3 forwards;
+        typing 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) forwards,
+        blink-caret 0.6s step-end infinite;
     }
 
     @keyframes typing {
       from { width: 0; }
-      to { width: 200px; } /* 適配 jnis 寬度 */
+      to { width: 220px; } /* 剛好容納 jnis 方塊寬度 */
     }
 
     @keyframes blink-caret {
@@ -70,7 +70,7 @@
       50% { border-color: #ffffff; }
     }
 
-    /* 2. 中間按鈕 - 加速登場 */
+    /* 2. 中間按鈕 */
     .btn-jnii {
       display: inline-block;
       padding: 16px 42px;
@@ -84,12 +84,11 @@
       letter-spacing: 1.5px;
       cursor: pointer;
       transition: all 0.3s ease;
-      margin-bottom: 70px; /* 與底部文字拉開距離 */
+      margin-bottom: 70px;
       
-      /* 打字快完時快速淡入（延遲縮短至 0.8s） */
       opacity: 0;
       transform: scale(0.92);
-      animation: fadeInBtn 0.4s ease-out 0.8s forwards;
+      animation: fadeInBtn 0.4s ease-out 0.7s forwards;
     }
 
     .btn-jnii:hover {
@@ -106,25 +105,15 @@
       }
     }
 
-    /* 3. 底部文字 - 水平單行、無藍框、微調偏下 */
+    /* 3. 底部單行商務聯絡資訊（無超連結純文字） */
     .inquiry-text {
       font-size: 1rem;
       color: #aaaaaa;
       letter-spacing: 0.8px;
-      white-space: nowrap; /* 確保保持單行 */
+      white-space: nowrap;
       
       opacity: 0;
-      animation: fadeInText 0.6s ease-out 1.2s forwards;
-    }
-
-    .inquiry-text a {
-      color: #ffffff;
-      text-decoration: none;
-      font-weight: 500;
-    }
-
-    .inquiry-text a:hover {
-      text-decoration: underline;
+      animation: fadeInText 0.6s ease-out 1.1s forwards;
     }
 
     @keyframes fadeInText {
@@ -137,17 +126,17 @@
 <body>
 
   <div class="container">
-    <!-- 打字機登場的美化 jnis -->
+    <!-- 方正流暢打字登場的小寫 jnis -->
     <div class="typewriter-wrapper">
       <h1 class="typewriter">jnis</h1>
     </div>
 
-    <!-- 加速登場的中間按鈕 -->
+    <!-- 中間按鈕 -->
     <a href="#" class="btn-jnii">@jnii2008</a>
 
-    <!-- 底部單行商務聯絡文字（無藍框） -->
+    <!-- 底部無超連結的純文字商務聯絡資訊 -->
     <p class="inquiry-text">
-      Business Inquiries: <a href="mailto:jnis550088@gmail.com">jnis550088@gmail.com</a>
+      Business Inquiries: jnis550088@gmail.com
     </p>
   </div>
 
