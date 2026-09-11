@@ -2,7 +2,8 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- 針對手機與 IG 內建瀏覽器鎖定縮放與邊界，避免 UI 被拉大 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>jnis2008</title>
   <!-- 導入方正幾何風格字體 Press Start 2P -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -47,7 +48,9 @@
       background-color: var(--bg-color);
       color: var(--text-color);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      /* 修正 IG 瀏覽器 100vh 擠壓問題：優先使用 100svh */
       min-height: 100vh;
+      min-height: 100svh;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -264,7 +267,6 @@
       z-index: 20;
     }
 
-    /* 電腦端 Hover 顯示 */
     @media (hover: hover) {
       .white-box-wrapper.yt-wrapper:hover .yt-sub-container {
         opacity: 1;
@@ -273,7 +275,6 @@
       }
     }
 
-    /* 手機/點擊類別 active 時顯示 */
     .white-box-wrapper.yt-wrapper.open .yt-sub-container {
       opacity: 1;
       pointer-events: auto;
@@ -344,7 +345,6 @@
       to { opacity: 1; }
     }
 
-    /* Copied 灰字提示 */
     .copied-toast {
       position: absolute;
       font-size: 0.85rem;
@@ -388,117 +388,103 @@
     }
 
     /* ==========================================
-       📱 手機與行動裝置 UI 縮小與 RWD
+       📱 手機端 / Instagram 內建瀏覽器專用優化
     ========================================== */
     @media (max-width: 768px) {
       .theme-toggle-btn {
-        top: 20px;
-        left: 18px;
-        padding: 5px 0;
-        min-width: 65px;
-        font-size: 0.7rem;
+        top: 15px;
+        left: 15px;
+        padding: 4px 0;
+        min-width: 60px;
+        font-size: 0.65rem;
       }
 
       .top-right-logo {
-        top: 20px;
-        right: 18px;
-        font-size: 1.35rem;
+        top: 15px;
+        right: 15px;
+        font-size: 1.2rem;
       }
 
       .typewriter-wrapper {
-        margin-bottom: 35px;
+        margin-bottom: 25px;
       }
 
+      /* 針對 IG 內建瀏覽器再微調小字體，防止文字過寬 */
       .typewriter {
-        font-size: 2.8rem;
-        border-right-width: 4px;
+        font-size: 2.1rem;
+        border-right-width: 3px;
       }
 
       @keyframes typing {
         from { width: 0; }
-        to { width: 178px; }
+        to { width: 135px; }
       }
 
       .btn-jnii {
-        padding: 10px 24px;
-        font-size: 0.92rem;
+        padding: 8px 20px;
+        font-size: 0.82rem;
         border-width: 2px;
-        margin-bottom: 50px;
+        margin-bottom: 35px;
       }
 
       .links-menu {
-        gap: 18px;
-        max-width: 320px;
-        margin-bottom: 50px;
+        gap: 15px;
+        max-width: 260px;
+        margin-bottom: 35px;
       }
 
       .white-box {
-        height: 50px;
-        font-size: 1rem;
-        border-width: 2.5px;
+        height: 42px;
+        font-size: 0.88rem;
+        border-width: 2px;
       }
 
       .yt-sub-container {
-        gap: 10px;
-        padding-top: 6px;
+        gap: 8px;
+        padding-top: 5px;
       }
 
       .yt-btn {
-        height: 40px;
-        font-size: 0.85rem;
+        height: 35px;
+        font-size: 0.75rem;
         border-width: 2px;
       }
 
       .inquiry-text {
-        font-size: 0.75rem;
-        letter-spacing: 0.5px;
+        font-size: 0.65rem;
+        letter-spacing: 0.3px;
         white-space: nowrap;
       }
 
       .copied-toast {
-        font-size: 0.7rem;
+        font-size: 0.65rem;
       }
 
       .copied-toast.pos-bottom {
-        top: 22px;
+        top: 20px;
       }
 
       .copied-toast.pos-top {
-        bottom: 22px;
+        bottom: 20px;
       }
     }
 
-    @media (max-width: 480px) {
+    @media (max-width: 380px) {
       .typewriter {
-        font-size: 2.2rem;
+        font-size: 1.8rem;
       }
 
       @keyframes typing {
         from { width: 0; }
-        to { width: 140px; }
-      }
-
-      .btn-jnii {
-        padding: 9px 20px;
-        font-size: 0.85rem;
+        to { width: 115px; }
       }
 
       .links-menu {
-        max-width: 280px;
-      }
-
-      .white-box {
-        height: 45px;
-        font-size: 0.9rem;
-      }
-
-      .yt-btn {
-        height: 36px;
-        font-size: 0.78rem;
+        max-width: 230px;
       }
 
       .inquiry-text {
-        font-size: 0.68rem;
+        font-size: 0.58rem;
       }
     }
   </style>
@@ -530,7 +516,7 @@
         <a href="https://www.instagram.com/jnii2008/" target="_blank" class="white-box">Instagram</a>
       </div>
 
-      <!-- YouTube (點擊或懸停展開) -->
+      <!-- YouTube -->
       <div class="white-box-wrapper yt-wrapper" id="ytWrapper">
         <div class="white-box" id="ytTrigger">YouTube</div>
         <div class="yt-sub-container">
@@ -585,7 +571,7 @@
       }, 400);
     });
 
-    // YouTube 點擊展開/收合 (針對手機端)
+    // YouTube 點擊展開/收合
     ytTrigger.addEventListener('click', function(e) {
       e.stopPropagation();
       ytWrapper.classList.toggle('open');
