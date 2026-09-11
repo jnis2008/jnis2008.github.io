@@ -75,7 +75,7 @@
       padding: 0 20px;
     }
 
-    /* ===== 鼠標發光跟隨特效 (已調小範圍) ===== */
+    /* ===== 鼠標發光跟隨特效 ===== */
     .cursor-glow {
       position: fixed;
       top: 0;
@@ -541,6 +541,11 @@
 
     /* 手機端適配 */
     @media (max-width: 768px) {
+      /* 手機版隱藏鼠標光暈 */
+      .cursor-glow {
+        display: none !important;
+      }
+
       .theme-toggle-btn {
         top: 15px;
         left: 15px;
@@ -647,7 +652,7 @@
   <!-- 左下角返回首頁按鈕 -->
   <button class="back-home-btn" id="backHomeBtn">Home</button>
 
-  <!-- 右上角固定標題 jnis -->
+  <!--右上角固定標題 jnis -->
   <div class="top-right-wrapper">
     <div class="top-right-logo" id="topLogo">jnis</div>
   </div>
@@ -667,7 +672,7 @@
       <!-- 第二頁選單 -->
       <div class="links-menu" id="linksMenu">
         
-        <!-- 像素貓狗樹木動態 Canvas -->
+        <!-- 像素風車與乳牛動態 Canvas -->
         <div class="pixel-canvas-wrapper">
           <canvas id="pixelCanvas" width="480" height="70"></canvas>
         </div>
@@ -821,7 +826,7 @@
     });
 
     // ========================================================
-    // ===== 像素 Canvas (地平線、樹木、貓狗慢速移動與轉向) =====
+    // ===== 像素 Canvas (地平線、風車、乳牛慢速移動與轉向) =====
     // ========================================================
     const canvas = document.getElementById('pixelCanvas');
     const ctx = canvas.getContext('2d');
@@ -848,36 +853,20 @@
       [0,0,1,1,0,0]
     ];
 
-    // 貓貓像素定義 (面向右邊)
-    const catRight1 = [
-      [0,0,0,1,0,0,1,0],
-      [0,0,1,1,1,1,1,0],
-      [1,1,1,1,1,1,1,1],
-      [0,1,1,1,1,1,1,1],
-      [0,1,0,1,0,1,0,1]
+    // 乳牛像素定義 (依照你提供的圖片造型設計，面向右邊)
+    const cowRight1 = [
+      [0,0,0,1,1,0,0,0,0,0,0,0,0,0,0],
+      [0,0,1,1,1,1,1,1,1,1,1,1,1,0,0],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+      [0,0,1,1,1,1,1,1,1,1,1,1,1,1,0],
+      [0,0,1,0,1,0,0,1,0,0,1,0,0,1,0]
     ];
-    const catRight2 = [
-      [0,0,0,1,0,0,1,0],
-      [0,0,1,1,1,1,1,0],
-      [1,1,1,1,1,1,1,1],
-      [0,1,1,1,1,1,1,1],
-      [0,0,1,0,1,0,1,0]
-    ];
-
-    // 狗狗像素定義 (面向右邊)
-    const dogRight1 = [
-      [1,1,0,0,0,0,0,0],
-      [1,1,1,1,1,1,1,0],
-      [1,1,1,1,1,1,1,1],
-      [0,1,1,1,1,1,1,0],
-      [0,1,0,1,0,1,0,1]
-    ];
-    const dogRight2 = [
-      [1,1,0,0,0,0,0,0],
-      [1,1,1,1,1,1,1,0],
-      [1,1,1,1,1,1,1,1],
-      [0,1,1,1,1,1,1,0],
-      [0,0,1,0,1,0,1,0]
+    const cowRight2 = [
+      [0,0,0,1,1,0,0,0,0,0,0,0,0,0,0],
+      [0,0,1,1,1,1,1,1,1,1,1,1,1,0,0],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+      [0,0,1,1,1,1,1,1,1,1,1,1,1,1,0],
+      [0,0,0,1,0,1,0,0,1,0,0,1,0,1,0]
     ];
 
     // 繪製矩陣函式（支援 dir === -1 時自動水平鏡像翻轉）
@@ -896,14 +885,59 @@
       }
     }
 
+    // 繪製風車主體與旋轉扇葉
+    function drawWindmill(baseX, groundY, pixelSize, color, time) {
+      // 風車塔身 (梯形)
+      ctx.fillStyle = color;
+      const towerRows = [
+        [0,0,1,1,0,0],
+        [0,1,1,1,1,0],
+        [0,1,1,1,1,0],
+        [1,1,1,1,1,1],
+        [1,1,1,1,1,1]
+      ];
+      const towerH = towerRows.length * pixelSize;
+      const towerY = groundY - towerH;
+      
+      for (let r = 0; r < towerRows.length; r++) {
+        for (let c = 0; c < towerRows[r].length; c++) {
+          if (towerRows[r][c] === 1) {
+            ctx.fillRect(baseX + c * pixelSize, towerY + r * pixelSize, pixelSize, pixelSize);
+          }
+        }
+      }
+
+      // 風車旋轉扇葉中心點
+      const centerX = baseX + (towerRows[0].length * pixelSize) / 2;
+      const centerY = towerY + pixelSize * 1.5;
+      const bladeLength = pixelSize * 6;
+
+      ctx.save();
+      ctx.translate(centerX, centerY);
+      // 讓扇葉隨時間旋轉
+      ctx.rotate(time * 0.02);
+
+      // 畫四片扇葉
+      ctx.fillStyle = color;
+      for (let i = 0; i < 4; i++) {
+        ctx.rotate(Math.PI / 2);
+        ctx.fillRect(-pixelSize / 2, -bladeLength, pixelSize, bladeLength);
+        // 扇葉網格細節
+        ctx.fillRect(pixelSize, -bladeLength + pixelSize * 2, pixelSize * 2, pixelSize * 3);
+      }
+      ctx.restore();
+    }
+
     // 樹木位置
     const treePositions = [
-      { type: treeLarge, x: 60 },
-      { type: treeSmall, x: 180 },
-      { type: treeLarge, x: 370 }
+      { type: treeLarge, x: 40 },
+      { type: treeSmall, x: 140 }
     ];
 
-    // 動物角色類別
+    // 風車位置
+    const windmillX = 380;
+
+    // 動物角色類別 (乳牛)
     class PixelAnimal {
       constructor(type, startX, speed) {
         this.type = type;
@@ -936,8 +970,8 @@
           if (this.x < 25) {
             this.x = 25;
             this.dir = 1;
-          } else if (this.x > 435) {
-            this.x = 435;
+          } else if (this.x > 410) {
+            this.x = 410;
             this.dir = -1;
           }
         } else {
@@ -946,13 +980,7 @@
       }
 
       draw(groundY, pixelSize, color) {
-        let matrix;
-        if (this.type === 'cat') {
-          matrix = (this.currentFrame === 0) ? catRight1 : catRight2;
-        } else {
-          matrix = (this.currentFrame === 0) ? dogRight1 : dogRight2;
-        }
-
+        const matrix = (this.currentFrame === 0) ? cowRight1 : cowRight2;
         const animalHeight = matrix.length * pixelSize;
         const drawY = groundY - animalHeight;
         
@@ -961,12 +989,14 @@
     }
 
     const animals = [
-      new PixelAnimal('cat', 110, 0.28),
-      new PixelAnimal('dog', 290, 0.32)
+      new PixelAnimal('cow', 220, 0.25)
     ];
+
+    let animTime = 0;
 
     function renderPixelScene() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      animTime++;
 
       const pixelColor = getComputedStyle(document.documentElement).getPropertyValue('--pixel-color').trim() || '#ffffff';
       const groundY = 60;
@@ -982,7 +1012,10 @@
         drawPixelMatrix(tree.type, tree.x, groundY - treeH, pixelSize, 1, pixelColor);
       });
 
-      // 3. 貓狗
+      // 3. 風車
+      drawWindmill(windmillX, groundY, pixelSize, pixelColor, animTime);
+
+      // 4. 乳牛
       animals.forEach(animal => {
         animal.update();
         animal.draw(groundY, pixelSize, pixelColor);
