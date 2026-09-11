@@ -73,20 +73,30 @@
       padding: 0 20px;
     }
 
-    /* ===== 鼠標發光跟隨特效 ===== */
-    .cursor-glow {
+    /* ===== 像素紅愛心粒子特效層 ===== */
+    .heart-particle {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 160px;
-      height: 160px;
-      border-radius: 50%;
-      background: radial-gradient(circle, var(--glow-color) 0%, rgba(0,0,0,0) 75%);
+      width: 10px;
+      height: 10px;
+      background-color: #ff3366;
+      clip-path: polygon(50% 15%, 100% 0%, 100% 50%, 50% 100%, 0% 50%, 0% 0%);
       pointer-events: none;
-      transform: translate(-50%, -50%);
-      transition: opacity 0.3s ease;
-      z-index: 0;
-      will-change: transform;
+      z-index: 999;
+      transform: translate(-50%, -50%) scale(1);
+      animation: floatUpAndFade 0.9s ease-out forwards;
+      box-shadow: 0 0 6px rgba(255, 51, 102, 0.8);
+      image-rendering: pixelated;
+    }
+
+    @keyframes floatUpAndFade {
+      0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0.4) rotate(var(--rot));
+      }
     }
 
     /* ===== 左上角切換主題按鈕 ===== */
@@ -186,7 +196,7 @@
       color: var(--text-color);
       pointer-events: none;
       white-space: nowrap;
-      z-index: 999;
+      z-index: 1000;
       will-change: transform, opacity;
       animation: dropAndFade 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
     }
@@ -363,7 +373,7 @@
       font-size: 1.15rem;
       font-weight: 700;
       letter-spacing: 1.5px;
-      color: var(--text-color);
+      color: #ffffff; /* 確保時鐘字體為白色 */
       cursor: default;
       padding: 2px 10px;
       border: none;
@@ -555,11 +565,6 @@
 
     /* 手機端適配 */
     @media (max-width: 768px) {
-      /* 手機版隱藏鼠標光暈 */
-      .cursor-glow {
-        display: none !important;
-      }
-
       .theme-toggle-btn {
         top: 15px;
         left: 15px;
@@ -661,9 +666,6 @@
 </head>
 <body>
 
-  <!-- 背景鼠標發光跟隨層 -->
-  <div class="cursor-glow" id="cursorGlow"></div>
-
   <!-- 左上角切換暗底/亮底按鈕 -->
   <button class="theme-toggle-btn" id="themeToggleBtn">Dark</button>
 
@@ -716,7 +718,7 @@
           <div class="white-box" id="ytTrigger">YouTube</div>
           <div class="yt-sub-container">
             <a href="https://www.youtube.com/@jnii2008" target="_blank" class="yt-btn">Main</a>
-            <a href="https://www.youtube.com/@%E5%82%91%E5%B0%BC4" target="_blank" class="yt-btn">VOD</a>
+            <a href="https://www.youtube.com/@%E5%82%91%E5%BC%BC4" target="_blank" class="yt-btn">VOD</a>
           </div>
         </div>
       </div>
@@ -742,13 +744,54 @@
     const backHomeBtn = document.getElementById('backHomeBtn');
     const ytWrapper = document.getElementById('ytWrapper');
     const ytTrigger = document.getElementById('ytTrigger');
-    const cursorGlow = document.getElementById('cursorGlow');
     const timezoneClock = document.getElementById('timezoneClock');
     const dateDisplay = document.getElementById('dateDisplay');
 
     let toastTimeout;
     const kaomojis = ['><', '(ﾉ∀`*)', '(≧∀≦)ゞ', 'ヾ(*´∀ ˋ*)ﾉ', '(*ﾟ∀ﾟ*)', '(;´༎ຶД༎ຶ`)', '( °3°)', '(つ´ω`)つ'];
     let kaomojiIndex = 0;
+
+    // ===== 滑鼠位置與靜置噴發愛心粒子系統 =====
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let lastMouseX = mouseX;
+    let lastMouseY = mouseY;
+
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      // 移動時機率性或適量噴發愛心
+      if (Math.random() < 0.4) {
+        createHeartParticle(mouseX, mouseY);
+      }
+    });
+
+    // 靜置時持續噴發愛心
+    setInterval(() => {
+      createHeartParticle(mouseX, mouseY);
+    }, 180);
+
+    function createHeartParticle(x, y) {
+      const heart = document.createElement('div');
+      heart.className = 'heart-particle';
+      
+      const offsetX = (Math.random() - 0.5) * 45;
+      const offsetY = (Math.random() - 0.5) * 45;
+      
+      heart.style.left = `${x + offsetX}px`;
+      heart.style.top = `${y + offsetY}px`;
+      
+      const dx = (Math.random() - 0.5) * 70 + 'px';
+      const dy = (-Math.random() * 60 - 20) + 'px';
+      const rot = (Math.random() - 0.5) * 90 + 'deg';
+      
+      heart.style.setProperty('--dx', dx);
+      heart.style.setProperty('--dy', dy);
+      heart.style.setProperty('--rot', rot);
+      
+      document.body.appendChild(heart);
+      heart.addEventListener('animationend', () => heart.remove());
+    }
 
     // ===== 系統時間、日期與 AM/PM 顯示邏輯 =====
     function updateClockAndDate() {
@@ -775,18 +818,8 @@
       timezoneClock.textContent = `${formattedHours}:${formattedMinutes} ${ampm}`;
     }
 
-    // 每秒更新
     setInterval(updateClockAndDate, 1000);
     updateClockAndDate();
-
-    // ===== 鼠標發光跟隨邏輯 =====
-    document.addEventListener('mousemove', (e) => {
-      cursorGlow.style.left = `${e.clientX}px`;
-      cursorGlow.style.top = `${e.clientY}px`;
-    });
-
-    document.addEventListener('mouseleave', () => cursorGlow.style.opacity = '0');
-    document.addEventListener('mouseenter', () => cursorGlow.style.opacity = '1');
 
     // ===== 頁面切換 =====
     btnJnii.addEventListener('click', function() {
@@ -825,7 +858,7 @@
       }, 350);
     });
 
-    // 右上角 jnis 點擊爆發表情
+    // 右上角 jnis 點擊爆發表情符號（不觸發頁面跳轉與返回）
     topLogo.addEventListener('click', function(e) {
       e.stopPropagation();
       const rect = topLogo.getBoundingClientRect();
