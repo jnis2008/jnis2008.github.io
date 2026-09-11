@@ -239,6 +239,7 @@
       letter-spacing: 2px;
       cursor: pointer;
       transition: all 0.3s ease;
+      user-select: none;
     }
 
     .white-box:hover {
@@ -247,7 +248,7 @@
       box-shadow: 0 0 25px var(--box-shadow-color);
     }
 
-    /* ===== YouTube 懸停浮動選單 ===== */
+    /* ===== YouTube 懸停 / 點擊展開選單 ===== */
     .yt-sub-container {
       display: flex;
       gap: 15px;
@@ -263,8 +264,17 @@
       z-index: 20;
     }
 
-    .white-box-wrapper.yt-wrapper:hover .yt-sub-container,
-    .white-box-wrapper.yt-wrapper:focus-within .yt-sub-container {
+    /* 電腦端 Hover 顯示 */
+    @media (hover: hover) {
+      .white-box-wrapper.yt-wrapper:hover .yt-sub-container {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0);
+      }
+    }
+
+    /* 手機/點擊類別 active 時顯示 */
+    .white-box-wrapper.yt-wrapper.open .yt-sub-container {
       opacity: 1;
       pointer-events: auto;
       transform: translateY(0);
@@ -378,70 +388,30 @@
     }
 
     /* ==========================================
-       📱 手機與行動裝置響應式 RWD 調整
+       📱 手機與行動裝置 UI 縮小與 RWD
     ========================================== */
     @media (max-width: 768px) {
       .theme-toggle-btn {
-        top: 25px;
-        left: 20px;
-        padding: 6px 0;
-        min-width: 70px;
-        font-size: 0.75rem;
+        top: 20px;
+        left: 18px;
+        padding: 5px 0;
+        min-width: 65px;
+        font-size: 0.7rem;
       }
 
       .top-right-logo {
-        top: 25px;
-        right: 20px;
-        font-size: 1.6rem;
+        top: 20px;
+        right: 18px;
+        font-size: 1.35rem;
       }
 
       .typewriter-wrapper {
-        margin-bottom: 45px;
+        margin-bottom: 35px;
       }
 
-      .typewriter {
-        font-size: 3.5rem;
-        border-right-width: 4px;
-      }
-
-      @keyframes typing {
-        from { width: 0; }
-        to { width: 220px; }
-      }
-
-      .btn-jnii {
-        padding: 14px 32px;
-        font-size: 1.1rem;
-        margin-bottom: 70px;
-      }
-
-      .links-menu {
-        gap: 24px;
-        margin-bottom: 70px;
-      }
-
-      .white-box {
-        height: 62px;
-        font-size: 1.25rem;
-      }
-
-      .yt-btn {
-        height: 48px;
-        font-size: 1rem;
-      }
-
-      .inquiry-text {
-        font-size: 0.82rem;
-        white-space: normal;
-        word-break: break-all;
-        text-align: center;
-        padding: 0 10px;
-      }
-    }
-
-    @media (max-width: 480px) {
       .typewriter {
         font-size: 2.8rem;
+        border-right-width: 4px;
       }
 
       @keyframes typing {
@@ -450,18 +420,85 @@
       }
 
       .btn-jnii {
-        padding: 12px 26px;
-        font-size: 1rem;
+        padding: 10px 24px;
+        font-size: 0.92rem;
+        border-width: 2px;
+        margin-bottom: 50px;
+      }
+
+      .links-menu {
+        gap: 18px;
+        max-width: 320px;
+        margin-bottom: 50px;
       }
 
       .white-box {
-        height: 56px;
-        font-size: 1.1rem;
+        height: 50px;
+        font-size: 1rem;
+        border-width: 2.5px;
+      }
+
+      .yt-sub-container {
+        gap: 10px;
+        padding-top: 6px;
       }
 
       .yt-btn {
-        height: 44px;
+        height: 40px;
+        font-size: 0.85rem;
+        border-width: 2px;
+      }
+
+      .inquiry-text {
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+      }
+
+      .copied-toast {
+        font-size: 0.7rem;
+      }
+
+      .copied-toast.pos-bottom {
+        top: 22px;
+      }
+
+      .copied-toast.pos-top {
+        bottom: 22px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .typewriter {
+        font-size: 2.2rem;
+      }
+
+      @keyframes typing {
+        from { width: 0; }
+        to { width: 140px; }
+      }
+
+      .btn-jnii {
+        padding: 9px 20px;
+        font-size: 0.85rem;
+      }
+
+      .links-menu {
+        max-width: 280px;
+      }
+
+      .white-box {
+        height: 45px;
         font-size: 0.9rem;
+      }
+
+      .yt-btn {
+        height: 36px;
+        font-size: 0.78rem;
+      }
+
+      .inquiry-text {
+        font-size: 0.68rem;
       }
     }
   </style>
@@ -493,9 +530,9 @@
         <a href="https://www.instagram.com/jnii2008/" target="_blank" class="white-box">Instagram</a>
       </div>
 
-      <!-- YouTube -->
-      <div class="white-box-wrapper yt-wrapper" tabindex="0">
-        <div class="white-box">YouTube</div>
+      <!-- YouTube (點擊或懸停展開) -->
+      <div class="white-box-wrapper yt-wrapper" id="ytWrapper">
+        <div class="white-box" id="ytTrigger">YouTube</div>
         <div class="yt-sub-container">
           <a href="https://www.youtube.com/@jnii2008" target="_blank" class="yt-btn">Main</a>
           <a href="https://www.youtube.com/@%E5%82%91%E5%B0%BC4" target="_blank" class="yt-btn">VOD</a>
@@ -520,6 +557,8 @@
     const inquiryText = document.getElementById('inquiryText');
     const copiedToast = document.getElementById('copiedToast');
     const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const ytWrapper = document.getElementById('ytWrapper');
+    const ytTrigger = document.getElementById('ytTrigger');
 
     let isSecondPage = false;
     let toastTimeout;
@@ -544,6 +583,19 @@
           inquiryText.classList.add('inquiry-visible');
         });
       }, 400);
+    });
+
+    // YouTube 點擊展開/收合 (針對手機端)
+    ytTrigger.addEventListener('click', function(e) {
+      e.stopPropagation();
+      ytWrapper.classList.toggle('open');
+    });
+
+    // 點擊頁面其他地方自動收合 YouTube 選單
+    document.addEventListener('click', function(e) {
+      if (!ytWrapper.contains(e.target)) {
+        ytWrapper.classList.remove('open');
+      }
     });
 
     // 點擊複製 Email 功能
