@@ -9,15 +9,39 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
-    /* 全局樣式 */
+    /* 全局變數 (預設為暗底 Dark Mode) */
+    :root {
+      --bg-color: #0d0d0d;
+      --text-color: #ffffff;
+      --border-color: #ffffff;
+      --hover-bg: #ffffff;
+      --hover-text: #0d0d0d;
+      --box-shadow-color: rgba(255, 255, 255, 0.4);
+      --inquiry-base: #888888;
+      --inquiry-shine: #ffffff;
+    }
+
+    /* 亮底 Theme (Light Mode) */
+    body.light-theme {
+      --bg-color: #f5f5f5;
+      --text-color: #0d0d0d;
+      --border-color: #0d0d0d;
+      --hover-bg: #0d0d0d;
+      --hover-text: #ffffff;
+      --box-shadow-color: rgba(0, 0, 0, 0.3);
+      --inquiry-base: #555555;
+      --inquiry-shine: #000000;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
+
     body {
-      background-color: #0d0d0d;
-      color: #ffffff;
+      background-color: var(--bg-color);
+      color: var(--text-color);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       min-height: 100vh;
       display: flex;
@@ -25,6 +49,56 @@
       align-items: center;
       overflow: hidden;
       position: relative;
+      transition: background-color 0.4s ease, color 0.4s ease;
+    }
+
+    /* ===== 3. 右上角切換主題按鈕 ===== */
+    .theme-toggle-btn {
+      position: absolute;
+      top: 40px;
+      left: 50px;
+      background: transparent;
+      border: 2px solid var(--border-color);
+      color: var(--text-color);
+      padding: 8px 16px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      border-radius: 20px;
+      cursor: pointer;
+      z-index: 100;
+      transition: all 0.3s ease;
+    }
+
+    .theme-toggle-btn:hover {
+      background-color: var(--hover-bg);
+      color: var(--hover-text);
+      box-shadow: 0 0 15px var(--box-shadow-color);
+    }
+
+    /* ===== 2. 右上角固定標題 jnis (懸停白光) ===== */
+    .top-right-logo {
+      position: absolute;
+      top: 40px;
+      right: 50px;
+      font-family: 'Press Start 2P', monospace, sans-serif;
+      font-size: 2.2rem;
+      color: var(--text-color);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-20px);
+      transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), text-shadow 0.3s ease, color 0.3s ease;
+      z-index: 10;
+      cursor: pointer;
+    }
+
+    .top-right-logo.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .top-right-logo:hover {
+      text-shadow: 0 0 15px rgba(255, 255, 255, 0.9), 0 0 30px rgba(255, 255, 255, 0.6);
     }
 
     /* 置中容器 */
@@ -39,23 +113,23 @@
       z-index: 1;
     }
 
-    /* 1. jnis 主頁標題 (175%) */
+    /* 1. jnis 主頁標題 */
     .typewriter-wrapper {
       display: flex;
       justify-content: center;
       align-items: center;
       margin-bottom: 65px;
-      transition: opacity 0.5s ease, transform 0.5s ease;
+      transition: opacity 0.4s ease, transform 0.4s ease;
     }
 
     .typewriter {
       font-family: 'Press Start 2P', monospace, sans-serif;
       font-size: 6.1rem;
       text-transform: lowercase;
-      color: #ffffff;
+      color: var(--text-color);
       white-space: nowrap;
       overflow: hidden;
-      border-right: 6px solid #ffffff;
+      border-right: 6px solid var(--text-color);
       width: 0;
       animation: 
         typing 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) forwards,
@@ -69,20 +143,20 @@
 
     @keyframes blink-caret {
       from, to { border-color: transparent; }
-      50% { border-color: #ffffff; }
+      50% { border-color: var(--text-color); }
     }
 
-    /* 2. 主頁中間按鈕 (背景與底色相同) */
+    /* 2. 主頁中間按鈕 */
     .btn-jnii {
       display: inline-block;
       padding: 18px 46px;
       font-size: 1.43rem;
       font-weight: 600;
-      color: #ffffff;
+      color: var(--text-color);
       text-decoration: none;
-      border: 3px solid #ffffff;
+      border: 3px solid var(--border-color);
       border-radius: 9px;
-      background-color: #0d0d0d; /* 與網頁背景同色 */
+      background-color: var(--bg-color);
       letter-spacing: 1.6px;
       cursor: pointer;
       transition: all 0.3s ease;
@@ -94,9 +168,9 @@
     }
 
     .btn-jnii:hover {
-      background-color: #ffffff;
-      color: #0d0d0d;
-      box-shadow: 0 0 22px rgba(255, 255, 255, 0.4);
+      background-color: var(--hover-bg);
+      color: var(--hover-text);
+      box-shadow: 0 0 22px var(--box-shadow-color);
       transform: scale(1.03);
     }
 
@@ -107,43 +181,37 @@
       }
     }
 
-    /* 3. 底部商務聯絡資訊 */
+    /* ===== 1. 底部 Business Inquiries 白光循環流動效果 ===== */
     .inquiry-text {
       font-size: 1.1rem;
-      color: #aaaaaa;
+      font-weight: 500;
       letter-spacing: 0.9px;
       white-space: nowrap;
-      transition: opacity 0.4s ease, transform 0.4s ease;
+      transition: opacity 0.6s ease, transform 0.6s ease;
       
+      /* 文字漸層掃光設定 */
+      background: linear-gradient(90deg, var(--inquiry-base) 0%, var(--inquiry-base) 40%, var(--inquiry-shine) 50%, var(--inquiry-base) 60%, var(--inquiry-base) 100%);
+      background-size: 200% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shimmer 3s infinite linear;
+
       opacity: 0;
-      animation: fadeInText 0.6s ease-out 1.1s forwards;
+    }
+
+    .inquiry-text.init-fadeIn {
+      animation: fadeInText 0.6s ease-out 1.1s forwards, shimmer 3s infinite linear;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
     }
 
     @keyframes fadeInText {
       to {
         opacity: 1;
       }
-    }
-
-    /* ===== 右上角固定標題 jnis ===== */
-    .top-right-logo {
-      position: absolute;
-      top: 40px;
-      right: 50px;
-      font-family: 'Press Start 2P', monospace, sans-serif;
-      font-size: 2.2rem;
-      color: #ffffff;
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(-10px);
-      transition: all 0.5s ease;
-      z-index: 10;
-    }
-
-    .top-right-logo.visible {
-      opacity: 1;
-      transform: translateY(0);
-      pointer-events: auto;
     }
 
     /* ===== 第二頁白框選單區域 ===== */
@@ -161,24 +229,23 @@
       display: flex;
     }
 
-    /* 白框基本樣式 (背景與底色相同) */
     .white-box-wrapper {
       width: 100%;
       position: relative;
       opacity: 0;
-      transform: translateY(-50px);
-      transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+      transform: translateY(-80px) scale(0.95);
+      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), 
+                  transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .links-menu.active .white-box-wrapper {
       opacity: 1;
-      transform: translateY(0);
+      transform: translateY(0) scale(1);
     }
 
-    /* 由上而下延遲進入動畫 */
-    .links-menu.active .white-box-wrapper:nth-child(1) { transition-delay: 0.1s; }
-    .links-menu.active .white-box-wrapper:nth-child(2) { transition-delay: 0.25s; }
-    .links-menu.active .white-box-wrapper:nth-child(3) { transition-delay: 0.4s; }
+    .links-menu.active .white-box-wrapper:nth-child(1) { transition-delay: 0.05s; }
+    .links-menu.active .white-box-wrapper:nth-child(2) { transition-delay: 0.22s; }
+    .links-menu.active .white-box-wrapper:nth-child(3) { transition-delay: 0.39s; }
 
     .white-box {
       display: flex;
@@ -186,10 +253,10 @@
       align-items: center;
       width: 100%;
       height: 75px;
-      border: 3.5px solid #ffffff;
+      border: 3.5px solid var(--border-color);
       border-radius: 9px;
-      background-color: #0d0d0d; /* 與網頁背景同色 */
-      color: #ffffff;
+      background-color: var(--bg-color);
+      color: var(--text-color);
       text-decoration: none;
       font-size: 1.5rem;
       font-weight: 700;
@@ -199,12 +266,12 @@
     }
 
     .white-box:hover {
-      background-color: #ffffff;
-      color: #0d0d0d;
-      box-shadow: 0 0 25px rgba(255, 255, 255, 0.4);
+      background-color: var(--hover-bg);
+      color: var(--hover-text);
+      box-shadow: 0 0 25px var(--box-shadow-color);
     }
 
-    /* YouTube 下拉選單子選單容器 */
+    /* YouTube 下拉選單 */
     .yt-dropdown {
       display: flex;
       justify-content: space-around;
@@ -213,15 +280,14 @@
       max-height: 0;
       overflow: hidden;
       opacity: 0;
-      background-color: #0d0d0d; /* 與網頁背景同色 */
-      border: 2px solid #ffffff;
+      background-color: var(--bg-color);
+      border: 2px solid var(--border-color);
       border-radius: 0 0 9px 9px;
       border-top: none;
       transition: max-height 0.4s ease, opacity 0.3s ease, margin-top 0.3s ease;
       margin-top: 0;
     }
 
-    /* 滑鼠懸停於 YT 區塊時彈出選單 */
     .white-box-wrapper.yt-wrapper:hover .yt-dropdown {
       max-height: 70px;
       opacity: 1;
@@ -231,34 +297,38 @@
     .yt-sub-btn {
       flex: 1;
       padding: 14px 0;
-      color: #ffffff;
+      color: var(--text-color);
       text-decoration: none;
       font-size: 1.2rem;
       font-weight: 600;
       text-align: center;
       letter-spacing: 1px;
       transition: all 0.2s ease;
-      background-color: #0d0d0d;
+      background-color: var(--bg-color);
     }
 
     .yt-sub-btn:hover {
-      background-color: #ffffff;
-      color: #0d0d0d;
+      background-color: var(--hover-bg);
+      color: var(--hover-text);
     }
 
     .yt-sub-btn:first-child {
-      border-right: 1px solid rgba(255, 255, 255, 0.3);
+      border-right: 1px solid var(--border-color);
     }
 
-    /* 隱藏主頁元素的淡出樣式 */
+    /* 淡出淡入動畫類別 */
     .fade-out {
       opacity: 0 !important;
-      transform: translateY(-20px) !important;
+      transform: translateY(-25px) !important;
       pointer-events: none;
     }
 
-    /* 淡入效果 class */
-    .fade-in {
+    .inquiry-hidden {
+      opacity: 0 !important;
+      transform: translateY(20px) !important;
+    }
+
+    .inquiry-visible {
       opacity: 1 !important;
       transform: translateY(0) !important;
     }
@@ -266,31 +336,31 @@
 </head>
 <body>
 
-  <!-- 右上角固定出現的 jnis -->
+  <!-- 3. 左上角切換暗底/亮底按鈕 -->
+  <button class="theme-toggle-btn" id="themeToggleBtn">☀️ Light</button>
+
+  <!-- 2. 右上角固定出現的 jnis (移上去發白光) -->
   <div class="top-right-logo" id="topLogo">jnis</div>
 
   <div class="container">
-    <!-- 1. 主頁 jnis 打字標題 -->
+    <!-- 主頁標題 -->
     <div class="typewriter-wrapper" id="homeTitle">
       <h1 class="typewriter">jnis</h1>
     </div>
 
-    <!-- 2. 主頁中間按鈕 -->
+    <!-- 主頁中間按鈕 -->
     <a href="javascript:void(0);" class="btn-jnii" id="btnJnii">@jnii2008</a>
 
-    <!-- 3. 第二頁白框社群選單 -->
+    <!-- 第二頁白框社群選單 -->
     <div class="links-menu" id="linksMenu">
-      <!-- Twitch -->
       <div class="white-box-wrapper">
         <a href="https://www.twitch.tv/jnii2008" target="_blank" class="white-box">Twitch</a>
       </div>
 
-      <!-- IG -->
       <div class="white-box-wrapper">
         <a href="https://www.instagram.com/jnii2008/" target="_blank" class="white-box">Instagram</a>
       </div>
 
-      <!-- YouTube (懸停選單) -->
       <div class="white-box-wrapper yt-wrapper">
         <div class="white-box">YouTube</div>
         <div class="yt-dropdown">
@@ -300,8 +370,8 @@
       </div>
     </div>
 
-    <!-- 4. 底部聯絡資訊 -->
-    <p class="inquiry-text" id="inquiryText">
+    <!-- 1. 底部聯絡資訊 (左右白光流動) -->
+    <p class="inquiry-text init-fadeIn" id="inquiryText">
       Business Inquiries: jnis550088@gmail.com
     </p>
   </div>
@@ -312,23 +382,37 @@
     const linksMenu = document.getElementById('linksMenu');
     const topLogo = document.getElementById('topLogo');
     const inquiryText = document.getElementById('inquiryText');
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
 
+    // 頁面切換效果
     btnJnii.addEventListener('click', function() {
       homeTitle.classList.add('fade-out');
       btnJnii.classList.add('fade-out');
-      inquiryText.classList.add('fade-out');
+      inquiryText.classList.remove('init-fadeIn');
+      inquiryText.classList.add('inquiry-hidden');
 
       setTimeout(() => {
         homeTitle.style.display = 'none';
         btnJnii.style.display = 'none';
 
-        topLogo.classList.add('visible');
-        linksMenu.classList.active;
         linksMenu.classList.add('active');
 
-        inquiryText.classList.remove('fade-out');
-        inquiryText.classList.add('fade-in');
+        requestAnimationFrame(() => {
+          topLogo.classList.add('visible');
+          inquiryText.classList.remove('inquiry-hidden');
+          inquiryText.classList.add('inquiry-visible');
+        });
       }, 400);
+    });
+
+    // 亮底/暗底主題切換功能
+    themeToggleBtn.addEventListener('click', function() {
+      document.body.classList.toggle('light-theme');
+      if (document.body.classList.contains('light-theme')) {
+        themeToggleBtn.textContent = '🌙 Dark';
+      } else {
+        themeToggleBtn.textContent = '☀️ Light';
+      }
     });
   </script>
 
