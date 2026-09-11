@@ -86,7 +86,7 @@
       letter-spacing: 1.6px;
       cursor: pointer;
       transition: all 0.3s ease;
-      margin-bottom: 77px;
+      margin-bottom: 110px; /* 拉大間距，將聯絡資訊推到底部 */
       
       opacity: 0;
       transform: scale(0.92);
@@ -145,7 +145,7 @@
       pointer-events: auto;
     }
 
-    /* ===== 第二頁黃框選單區域 ===== */
+    /* ===== 第二頁白框選單區域 ===== */
     .links-menu {
       display: none;
       flex-direction: column;
@@ -153,55 +153,54 @@
       gap: 32px;
       width: 100%;
       max-width: 480px;
-      margin-bottom: 50px;
+      margin-bottom: 110px; /* 加大下邊距，讓底部的聯絡資訊下移 */
     }
 
     .links-menu.active {
       display: flex;
     }
 
-    /* 黃框基本樣式 */
-    .yellow-box-wrapper {
+    /* 白框基本樣式 */
+    .white-box-wrapper {
       width: 100%;
       position: relative;
       opacity: 0;
-      transform: translateY(-50px); /* 由上方落下 */
+      transform: translateY(-50px);
       transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
 
-    .links-menu.active .yellow-box-wrapper {
+    .links-menu.active .white-box-wrapper {
       opacity: 1;
       transform: translateY(0);
     }
 
     /* 由上而下延遲進入動畫 */
-    .links-menu.active .yellow-box-wrapper:nth-child(1) { transition-delay: 0.1s; }
-    .links-menu.active .yellow-box-wrapper:nth-child(2) { transition-delay: 0.25s; }
-    .links-menu.active .yellow-box-wrapper:nth-child(3) { transition-delay: 0.4s; }
+    .links-menu.active .white-box-wrapper:nth-child(1) { transition-delay: 0.1s; }
+    .links-menu.active .white-box-wrapper:nth-child(2) { transition-delay: 0.25s; }
+    .links-menu.active .white-box-wrapper:nth-child(3) { transition-delay: 0.4s; }
 
-    .yellow-box {
+    .white-box {
       display: flex;
       justify-content: center;
       align-items: center;
       width: 100%;
       height: 75px;
-      border: 4.5 solid #ffee00;
-      border: 4.5px solid #e1e800; /* 明亮黃框 */
+      border: 3.5px solid #ffffff; /* 首頁風格經典白框 */
+      border-radius: 9px;
       background: rgba(0, 0, 0, 0.4);
       color: #ffffff;
       text-decoration: none;
       font-size: 1.5rem;
       font-weight: 700;
       letter-spacing: 2px;
-      box-sizing: border-border;
       cursor: pointer;
       transition: all 0.3s ease;
     }
 
-    .yellow-box:hover {
-      background: #e1e800;
+    .white-box:hover {
+      background: #ffffff;
       color: #0d0d0d;
-      box-shadow: 0 0 25px rgba(225, 232, 0, 0.5);
+      box-shadow: 0 0 25px rgba(255, 255, 255, 0.4);
     }
 
     /* YouTube 下拉選單子選單容器 */
@@ -214,14 +213,15 @@
       overflow: hidden;
       opacity: 0;
       background: #151515;
-      border: 2px solid #e1e800;
+      border: 2px solid #ffffff;
+      border-radius: 0 0 9px 9px;
       border-top: none;
       transition: max-height 0.4s ease, opacity 0.3s ease, margin-top 0.3s ease;
       margin-top: 0;
     }
 
     /* 滑鼠懸停於 YT 區塊時彈出選單 */
-    .yellow-box-wrapper.yt-wrapper:hover .yt-dropdown {
+    .white-box-wrapper.yt-wrapper:hover .yt-dropdown {
       max-height: 70px;
       opacity: 1;
       margin-top: 5px;
@@ -240,12 +240,12 @@
     }
 
     .yt-sub-btn:hover {
-      background: #e1e800;
+      background: #ffffff;
       color: #0d0d0d;
     }
 
     .yt-sub-btn:first-child {
-      border-right: 1px solid rgba(225, 232, 0, 0.4);
+      border-right: 1px solid rgba(255, 255, 255, 0.3);
     }
 
     /* 隱藏主頁元素的淡出樣式 */
@@ -270,21 +270,21 @@
     <!-- 2. 主頁中間按鈕 -->
     <a href="javascript:void(0);" class="btn-jnii" id="btnJnii">@jnii2008</a>
 
-    <!-- 3. 第二頁黃框社群選單 (點擊按鈕後顯示) -->
+    <!-- 3. 第二頁白框社群選單 (點擊按鈕後顯示) -->
     <div class="links-menu" id="linksMenu">
       <!-- Twitch -->
-      <div class="yellow-box-wrapper">
-        <a href="https://www.twitch.tv/jnii2008" target="_blank" class="yellow-box">Twitch</a>
+      <div class="white-box-wrapper">
+        <a href="https://www.twitch.tv/jnii2008" target="_blank" class="white-box">Twitch</a>
       </div>
 
       <!-- IG -->
-      <div class="yellow-box-wrapper">
-        <a href="https://www.instagram.com/jnii2008/" target="_blank" class="yellow-box">Instagram</a>
+      <div class="white-box-wrapper">
+        <a href="https://www.instagram.com/jnii2008/" target="_blank" class="white-box">Instagram</a>
       </div>
 
       <!-- YouTube (包含懸停出現 Main 與 VOD 選項) -->
-      <div class="yellow-box-wrapper yt-wrapper">
-        <div class="yellow-box">YouTube</div>
+      <div class="white-box-wrapper yt-wrapper">
+        <div class="white-box">YouTube</div>
         <div class="yt-dropdown">
           <a href="https://www.youtube.com/@jnii2008" target="_blank" class="yt-sub-btn">Main</a>
           <a href="https://www.youtube.com/@%E5%82%91%E5%B0%BC4" target="_blank" class="yt-sub-btn">VOD</a>
@@ -292,7 +292,7 @@
       </div>
     </div>
 
-    <!-- 4. 底部聯絡資訊 (維持固定) -->
+    <!-- 4. 底部聯絡資訊 -->
     <p class="inquiry-text">
       Business Inquiries: jnis550088@gmail.com
     </p>
@@ -314,10 +314,10 @@
         homeTitle.style.display = 'none';
         btnJnii.style.display = 'none';
 
-        // 2. 顯示右上角 Logo 與黃框選單
+        // 2. 顯示右上角 Logo 與白框選單
         topLogo.classList.add('visible');
         linksMenu.classList.add('active');
-      }, 400); // 配合淡出動畫時間
+      }, 400);
     });
   </script>
 
