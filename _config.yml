@@ -1,20 +1,16 @@
 # jnis2008.github.io
 # @jnii2008
-# 網站基本資訊
-title: 我的個人網站
-description: 這是我的 GitHub Pages 個人網站與專案展示
+
+title: 我的個人作品集
+description: 這是我的 HTML/CSS/JS 練習與作品展示網站
 author: jnis2008
 
-# GitHub Pages 網址設定
+
 url: "https://jnis2008.github.io"
-baseurl: ""  # 如果是 jnis2008.github.io 這種主站，這裡保持空白即可
+baseurl: "" 
 
-# 選用 Jekyll 免費主題（若不想用主題可刪除此行）
-theme: jekyll-theme-cayman
+theme: jekyll-theme-minimal
 
-# 建置時要忽略的檔案或資料夾
 exclude:
   - README.md
   - .gitignore
-
-
