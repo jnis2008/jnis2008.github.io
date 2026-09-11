@@ -29,7 +29,6 @@
       --inquiry-shine: #ffffff;
       --toast-color: #888888;
       --logo-hover-shadow: rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.6);
-      --pixel-color: #ffffff;
     }
 
     /* 亮底 Theme (Light Mode) */
@@ -45,7 +44,6 @@
       --inquiry-shine: #000000;
       --toast-color: #555555;
       --logo-hover-shadow: rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.4);
-      --pixel-color: #0d0d0d;
     }
 
     * {
@@ -330,30 +328,42 @@
       pointer-events: none;
     }
 
-    /* 像素畫布容器 (Discord 按鈕上方) */
-    .pixel-canvas-wrapper {
+    /* 時區時鐘顯示區 (Discord 按鈕上方) */
+    .time-display-wrapper {
       width: 100%;
-      height: 70px;
+      height: 50px;
       display: flex;
       justify-content: center;
-      align-items: flex-end;
-      margin-bottom: -10px;
+      align-items: center;
+      margin-bottom: -5px;
       opacity: 0;
       transform: translateY(20px);
       transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .links-menu.active .pixel-canvas-wrapper {
+    .links-menu.active .time-display-wrapper {
       opacity: 1;
       transform: translateY(0);
       transition-delay: 0.05s;
     }
 
-    #pixelCanvas {
-      width: 100%;
-      height: 70px;
-      image-rendering: pixelated;
-      image-rendering: crisp-edges;
+    .timezone-clock {
+      font-family: 'Press Start 2P', monospace, sans-serif;
+      font-size: 1.15rem;
+      color: var(--text-color);
+      cursor: pointer;
+      padding: 6px 14px;
+      border: 2px dashed var(--border-color);
+      border-radius: 8px;
+      background: transparent;
+      transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+    }
+
+    .timezone-clock:hover {
+      background-color: var(--hover-bg);
+      color: var(--hover-text);
+      box-shadow: 0 0 15px var(--box-shadow-color);
+      transform: scale(1.05);
     }
 
     /* 外層 Wrapper */
@@ -382,7 +392,7 @@
     .links-menu.active .white-box-wrapper:nth-child(5) { transition-delay: 0.4s; }
 
     .links-menu.fade-out .white-box-wrapper,
-    .links-menu.fade-out .pixel-canvas-wrapper {
+    .links-menu.fade-out .time-display-wrapper {
       opacity: 0;
       transform: translateY(20px) scale(0.95);
       transition-delay: 0s !important;
@@ -630,13 +640,14 @@
         bottom: 70px;
       }
 
-      .pixel-canvas-wrapper {
-        height: 55px;
-        margin-bottom: -5px;
+      .time-display-wrapper {
+        height: 40px;
+        margin-bottom: -2px;
       }
 
-      #pixelCanvas {
-        height: 55px;
+      .timezone-clock {
+        font-size: 0.85rem;
+        padding: 4px 10px;
       }
     }
   </style>
@@ -672,9 +683,9 @@
       <!-- 第二頁選單 -->
       <div class="links-menu" id="linksMenu">
         
-        <!-- 像素風車、貓貓與狗狗動態 Canvas -->
-        <div class="pixel-canvas-wrapper">
-          <canvas id="pixelCanvas" width="480" height="70"></canvas>
+        <!-- 時區時鐘 (點擊可切換時區) -->
+        <div class="time-display-wrapper">
+          <button class="timezone-clock" id="timezoneClock" title="點擊切換國家時區">00:00</button>
         </div>
 
         <!-- Discord -->
@@ -724,10 +735,53 @@
     const ytWrapper = document.getElementById('ytWrapper');
     const ytTrigger = document.getElementById('ytTrigger');
     const cursorGlow = document.getElementById('cursorGlow');
+    const timezoneClock = document.getElementById('timezoneClock');
 
     let toastTimeout;
     const kaomojis = ['><', '(ﾉ∀`*)', '(≧∀≦)ゞ', 'ヾ(*´∀ ˋ*)ﾉ', '(*ﾟ∀ﾟ*)', '(;´༎ຶД༎ຶ`)', '( °3°)', '(つ´ω`)つ'];
     let kaomojiIndex = 0;
+
+    // ===== 時區切換設定 =====
+    const timezones = [
+      { name: '台灣 (TPE)', zone: 'Asia/Taipei' },
+      { name: '美西 (LAX)', zone: 'America/Los_Angeles' },
+      { name: '美東 (NYC)', zone: 'America/New_York' },
+      { name: '日本 (TYO)', zone: 'Asia/Tokyo' },
+      { name: '英國 (LON)', zone: 'Europe/London' },
+      { name: '法國 (PAR)', zone: 'Europe/Paris' },
+      { name: '南韓 (SEL)', zone: 'Asia/Seoul' }
+    ];
+    let currentTimezoneIndex = 0;
+
+    function updateClock() {
+      const currentTz = timezones[currentTimezoneIndex];
+      const now = new Date();
+      try {
+        const options = {
+          timeZone: currentTz.zone,
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        };
+        const formatter = new Intl.DateTimeFormat('en-GB', options);
+        let timeString = formatter.format(now);
+        // 確保格式為 00:00
+        if (timeString === '24:00') timeString = '00:00';
+        timezoneClock.textContent = `${timeString} [${currentTz.name}]`;
+      } catch (e) {
+        timezoneClock.textContent = '00:00 [UTC]';
+      }
+    }
+
+    // 點擊時鐘切換時區
+    timezoneClock.addEventListener('click', () => {
+      currentTimezoneIndex = (currentTimezoneIndex + 1) % timezones.length;
+      updateClock();
+    });
+
+    // 每秒更新時鐘
+    setInterval(updateClock, 1000);
+    updateClock();
 
     // ===== 鼠標發光跟隨邏輯 =====
     document.addEventListener('mousemove', (e) => {
@@ -824,246 +878,6 @@
       document.body.classList.toggle('light-theme');
       themeToggleBtn.textContent = document.body.classList.contains('light-theme') ? 'Light' : 'Dark';
     });
-
-    // ========================================================
-    // ===== 像素 Canvas (地平線、高風車、精緻貓狗) =====
-    // ========================================================
-    const canvas = document.getElementById('pixelCanvas');
-    const ctx = canvas.getContext('2d');
-
-    // 樹 A (大松樹)
-    const treeLarge = [
-      [0,0,0,0,1,0,0,0,0],
-      [0,0,0,1,1,1,0,0,0],
-      [0,0,1,1,1,1,1,0,0],
-      [0,1,1,1,1,1,1,1,0],
-      [1,1,1,1,1,1,1,1,1],
-      [0,0,0,1,1,0,0,0,0],
-      [0,0,0,1,1,0,0,0,0],
-      [0,0,0,1,1,0,0,0,0]
-    ];
-
-    // 樹 B (圓冠小樹)
-    const treeSmall = [
-      [0,0,1,1,0,0],
-      [0,1,1,1,1,0],
-      [1,1,1,1,1,1],
-      [0,1,1,1,1,0],
-      [0,0,1,1,0,0],
-      [0,0,1,1,0,0]
-    ];
-
-    // 精緻貓貓像素定義 (面向右邊)
-    const catRight1 = [
-      [0,0,1,0,0,1,0],
-      [0,1,1,1,1,1,0],
-      [1,1,1,1,1,1,1],
-      [0,1,1,1,1,1,0],
-      [0,0,1,0,1,0,0]
-    ];
-    const catRight2 = [
-      [0,0,1,0,0,1,0],
-      [0,1,1,1,1,1,0],
-      [1,1,1,1,1,1,1],
-      [0,1,1,1,1,1,0],
-      [0,0,0,1,0,1,0]
-    ];
-
-    // 精緻狗狗像素定義 (面向右邊)
-    const dogRight1 = [
-      [1,1,0,0,0,0,0],
-      [1,1,1,1,1,1,0],
-      [1,1,1,1,1,1,1],
-      [0,1,1,1,1,1,0],
-      [0,1,0,0,1,0,0]
-    ];
-    const dogRight2 = [
-      [1,1,0,0,0,0,0],
-      [1,1,1,1,1,1,0],
-      [1,1,1,1,1,1,1],
-      [0,1,1,1,1,1,0],
-      [0,0,1,0,0,1,0]
-    ];
-
-    // 繪製矩陣函式（支援 dir === -1 時自動水平鏡像翻轉）
-    function drawPixelMatrix(matrix, startX, startY, pixelSize, dir, color) {
-      ctx.fillStyle = color;
-      const rows = matrix.length;
-      const cols = matrix[0].length;
-
-      for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < cols; c++) {
-          if (matrix[r][c] === 1) {
-            const actualC = (dir === 1) ? c : (cols - 1 - c);
-            ctx.fillRect(startX + actualC * pixelSize, startY + r * pixelSize, pixelSize, pixelSize);
-          }
-        }
-      }
-    }
-
-    // 繪製加高且帶尖頂的歐式風車與旋轉扇葉
-    function drawTallWindmill(baseX, groundY, pixelSize, color, time) {
-      // 1. 高塔身 (梯形)
-      const towerRows = [
-        [0,0,1,1,0,0],
-        [0,1,1,1,1,0],
-        [0,1,1,1,1,0],
-        [1,1,1,1,1,1],
-        [1,1,1,1,1,1],
-        [1,1,1,1,1,1]
-      ];
-      const towerH = towerRows.length * pixelSize;
-      const towerY = groundY - towerH;
-
-      ctx.fillStyle = color;
-      for (let r = 0; r < towerRows.length; r++) {
-        for (let c = 0; c < towerRows[r].length; c++) {
-          if (towerRows[r][c] === 1) {
-            ctx.fillRect(baseX + c * pixelSize, towerY + r * pixelSize, pixelSize, pixelSize);
-          }
-        }
-      }
-
-      // 2. 尖屋頂 (三角形帽)
-      const roofRows = [
-        [0,0,1,1,0,0],
-        [0,1,1,1,1,0],
-        [1,1,1,1,1,1]
-      ];
-      const roofH = roofRows.length * pixelSize;
-      const roofY = towerY - roofH;
-
-      for (let r = 0; r < roofRows.length; r++) {
-        for (let c = 0; c < roofRows[r].length; c++) {
-          if (roofRows[r][c] === 1) {
-            ctx.fillRect(baseX + (c - 0) * pixelSize, roofY + r * pixelSize, pixelSize, pixelSize);
-          }
-        }
-      }
-
-      // 3. 風車旋轉扇葉中心點
-      const centerX = baseX + (towerRows[0].length * pixelSize) / 2;
-      const centerY = towerY + pixelSize * 2;
-      const bladeLength = pixelSize * 7;
-
-      ctx.save();
-      ctx.translate(centerX, centerY);
-      ctx.rotate(time * 0.02); // 旋轉速度
-
-      // 畫四片扇葉
-      ctx.fillStyle = color;
-      for (let i = 0; i < 4; i++) {
-        ctx.rotate(Math.PI / 2);
-        ctx.fillRect(-pixelSize / 2, -bladeLength, pixelSize, bladeLength);
-        ctx.fillRect(pixelSize, -bladeLength + pixelSize * 2, pixelSize * 2, pixelSize * 3);
-      }
-      ctx.restore();
-    }
-
-    // 樹木位置
-    const treePositions = [
-      { type: treeLarge, x: 35 },
-      { type: treeSmall, x: 120 }
-    ];
-
-    // 風車位置
-    const windmillX = 390;
-
-    // 動物角色類別 (貓貓與狗狗)
-    class PixelAnimal {
-      constructor(type, startX, speed) {
-        this.type = type; // 'cat' 或 'dog'
-        this.x = startX;
-        this.speed = speed;
-        this.dir = Math.random() < 0.5 ? 1 : -1;
-        this.isMoving = true;
-        this.frameTimer = 0;
-        this.currentFrame = 0;
-        this.stateTimer = Math.floor(Math.random() * 200) + 100;
-      }
-
-      update() {
-        this.stateTimer--;
-        if (this.stateTimer <= 0) {
-          this.isMoving = Math.random() < 0.7;
-          if (Math.random() < 0.6) this.dir *= -1;
-          this.stateTimer = Math.floor(Math.random() * 250) + 100;
-        }
-
-        if (this.isMoving) {
-          this.x += this.speed * this.dir;
-
-          this.frameTimer++;
-          if (this.frameTimer >= 22) {
-            this.currentFrame = (this.currentFrame === 0) ? 1 : 0;
-            this.frameTimer = 0;
-          }
-
-          if (this.x < 25) {
-            this.x = 25;
-            this.dir = 1;
-          } else if (this.x > 360) {
-            this.x = 360;
-            this.dir = -1;
-          }
-        } else {
-          this.currentFrame = 0;
-        }
-      }
-
-      draw(groundY, pixelSize, color) {
-        let matrix;
-        if (this.type === 'cat') {
-          matrix = (this.currentFrame === 0) ? catRight1 : catRight2;
-        } else {
-          matrix = (this.currentFrame === 0) ? dogRight1 : dogRight2;
-        }
-
-        const animalHeight = matrix.length * pixelSize;
-        const drawY = groundY - animalHeight;
-        
-        drawPixelMatrix(matrix, Math.floor(this.x), drawY, pixelSize, this.dir, color);
-      }
-    }
-
-    const animals = [
-      new PixelAnimal('cat', 190, 0.28),
-      new PixelAnimal('dog', 290, 0.32)
-    ];
-
-    let animTime = 0;
-
-    function renderPixelScene() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      animTime++;
-
-      const pixelColor = getComputedStyle(document.documentElement).getPropertyValue('--pixel-color').trim() || '#ffffff';
-      const groundY = 60;
-      const pixelSize = 3;
-
-      // 1. 地平線
-      ctx.fillStyle = pixelColor;
-      ctx.fillRect(0, groundY, canvas.width, 4);
-
-      // 2. 樹木
-      treePositions.forEach(tree => {
-        const treeH = tree.type.length * pixelSize;
-        drawPixelMatrix(tree.type, tree.x, groundY - treeH, pixelSize, 1, pixelColor);
-      });
-
-      // 3. 高風車
-      drawTallWindmill(windmillX, groundY, pixelSize, pixelColor, animTime);
-
-      // 4. 精緻貓狗
-      animals.forEach(animal => {
-        animal.update();
-        animal.draw(groundY, pixelSize, pixelColor);
-      });
-
-      requestAnimationFrame(renderPixelScene);
-    }
-
-    renderPixelScene();
   </script>
 
 </body>
