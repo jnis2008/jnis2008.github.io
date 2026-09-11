@@ -80,7 +80,7 @@
       border-radius: 20px;
       cursor: pointer;
       z-index: 100;
-      transition: all 0.3s ease;
+      transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
     }
 
     .theme-toggle-btn:hover {
@@ -89,7 +89,7 @@
       box-shadow: 0 0 15px var(--box-shadow-color);
     }
 
-    /* ===== 右上角固定標題 jnis & 表情符號容器 ===== */
+    /* ===== 右上角固定標題 jnis ===== */
     .top-right-wrapper {
       position: absolute;
       top: 40px;
@@ -121,29 +121,32 @@
       text-shadow: 0 0 15px var(--logo-hover-shadow);
     }
 
-    /* 右上角點擊出現的自然掉落文字表情 */
-    .kaomoji-popup {
-      font-size: 1rem;
+    /* 動態生成的拋物掉落表情 */
+    .falling-kaomoji {
+      position: fixed;
+      font-size: 1.1rem;
       font-weight: 700;
       color: var(--text-color);
-      margin-top: 5px;
-      opacity: 0;
-      transform: translateY(-10px) scale(0.9);
-      transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1), transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
       pointer-events: none;
       white-space: nowrap;
-      height: 20px;
+      z-index: 999;
+      will-change: transform, opacity;
+      animation: dropAndFade 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
     }
 
-    .kaomoji-popup.show {
-      opacity: 1;
-      transform: translateY(12px) scale(1);
-    }
-
-    .kaomoji-popup.fade-out {
-      opacity: 0;
-      transform: translateY(22px) scale(0.95);
-      transition: opacity 0.5s ease-in, transform 0.5s ease-in;
+    @keyframes dropAndFade {
+      0% {
+        opacity: 1;
+        transform: translate(0, 0) rotate(0deg) scale(1);
+      }
+      20% {
+        opacity: 1;
+        transform: translate(var(--offset-x), -15px) rotate(calc(var(--rot) * 0.3)) scale(1.1);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(calc(var(--offset-x) * 1.8), 120px) rotate(var(--rot)) scale(0.85);
+      }
     }
 
     /* 置中主容器 (固定高寬，防跑位) */
@@ -236,7 +239,7 @@
       background-color: var(--bg-color);
       letter-spacing: 1.6px;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
       
       opacity: 0;
       transform: scale(0.92);
@@ -268,6 +271,7 @@
       pointer-events: none;
     }
 
+    /* 統一由外層 Wrapper 控制所有淡入滑動動畫，徹底消除抖動 */
     .white-box-wrapper {
       width: 100%;
       position: relative;
@@ -275,6 +279,7 @@
       transform: translateY(40px) scale(0.95);
       transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), 
                   transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: transform, opacity;
     }
 
     .links-menu.active {
@@ -306,7 +311,9 @@
       font-weight: 700;
       letter-spacing: 2px;
       cursor: pointer;
-      transition: all 0.3s ease;
+      /* 僅對 hover 顏色進行平滑過渡，不干擾進場 transform */
+      transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+      line-height: 1;
     }
 
     .white-box:hover {
@@ -359,7 +366,8 @@
       font-size: 1.1rem;
       font-weight: 700;
       letter-spacing: 1px;
-      transition: all 0.3s ease;
+      transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+      line-height: 1;
     }
 
     .yt-btn:hover {
@@ -461,9 +469,8 @@
         font-size: 1.2rem;
       }
 
-      .kaomoji-popup {
-        font-size: 0.8rem;
-        margin-top: 3px;
+      .falling-kaomoji {
+        font-size: 0.9rem;
       }
 
       .typewriter-wrapper {
@@ -553,10 +560,9 @@
   <!-- 左上角切換暗底/亮底按鈕 -->
   <button class="theme-toggle-btn" id="themeToggleBtn">Dark</button>
 
-  <!-- 右上角固定標題 jnis 與表情包顯示容器 -->
+  <!-- 右上角固定標題 jnis -->
   <div class="top-right-wrapper">
     <div class="top-right-logo" id="topLogo">jnis</div>
-    <div class="kaomoji-popup" id="kaomojiPopup"></div>
   </div>
 
   <div class="container" id="mainContainer">
@@ -613,7 +619,6 @@
     const heroContent = document.getElementById('heroContent');
     const linksMenu = document.getElementById('linksMenu');
     const topLogo = document.getElementById('topLogo');
-    const kaomojiPopup = document.getElementById('kaomojiPopup');
     const inquiryText = document.getElementById('inquiryText');
     const copiedToast = document.getElementById('copiedToast');
     const themeToggleBtn = document.getElementById('themeToggleBtn');
@@ -621,11 +626,9 @@
     const ytTrigger = document.getElementById('ytTrigger');
 
     let toastTimeout;
-    let kaomojiTimeoutShow;
-    let kaomojiTimeoutHide;
 
-    // 表情符號循環列表
-    const kaomojis = ['><', '(ﾉ∀`*)', '(≧∀≦)ゞ', 'ヾ(*´∀ ˋ*)ﾉ'];
+    // 表情符號隨機列表
+    const kaomojis = ['><', '(ﾉ∀`*)', '(≧∀≦)ゞ', 'ヾ(*´∀ ˋ*)ﾉ', '(*ﾟ∀ﾟ*)', '(;´༎ຶД༎ຶ`)', '( °3°)', '(つ´ω`)つ'];
     let kaomojiIndex = 0;
 
     // 頁面切換 logic (流暢淡入淡出)
@@ -645,37 +648,37 @@
       }, 350);
     });
 
-    // 右上角 jnis 點擊自然掉落與淡出表情符號
+    // 右上角 jnis 點擊爆發拋物掉落表情符號 (按越多噴越多)
     topLogo.addEventListener('click', function(e) {
       e.stopPropagation();
 
-      // 清除舊動畫計時器
-      clearTimeout(kaomojiTimeoutShow);
-      clearTimeout(kaomojiTimeoutHide);
+      const rect = topLogo.getBoundingClientRect();
+      const kaomojiEl = document.createElement('div');
+      kaomojiEl.className = 'falling-kaomoji';
+      kaomojiEl.textContent = kaomojis[kaomojiIndex];
 
-      // 重設狀態
-      kaomojiPopup.classList.remove('show', 'fade-out');
-      kaomojiPopup.textContent = kaomojis[kaomojiIndex];
-
-      // 強制重繪觸發動畫
-      void kaomojiPopup.offsetWidth;
-
-      // 掉落與淡入
-      kaomojiPopup.classList.add('show');
-
-      // 下一次點擊切換下一個表情
+      // 依序輪播表情
       kaomojiIndex = (kaomojiIndex + 1) % kaomojis.length;
 
-      // 停留後繼續沉降淡出
-      kaomojiTimeoutShow = setTimeout(() => {
-        kaomojiPopup.classList.remove('show');
-        kaomojiPopup.classList.add('fade-out');
-      }, 1800);
+      // 起始位置 (計算在 Logo 的中心下方)
+      const startX = rect.left + rect.width / 2 - 20;
+      const startY = rect.bottom + 5;
 
-      // 動畫結束後徹底重置
-      kaomojiTimeoutHide = setTimeout(() => {
-        kaomojiPopup.classList.remove('fade-out');
-      }, 2300);
+      // 產生隨機物理變數 (左右偏移量與旋轉角度)
+      const randomOffsetX = (Math.random() - 0.5) * 80 + 'px';
+      const randomRotation = (Math.random() - 0.5) * 60 + 'deg';
+
+      kaomojiEl.style.left = startX + 'px';
+      kaomojiEl.style.top = startY + 'px';
+      kaomojiEl.style.setProperty('--offset-x', randomOffsetX);
+      kaomojiEl.style.setProperty('--rot', randomRotation);
+
+      document.body.appendChild(kaomojiEl);
+
+      // 動畫結束後自動刪除元素，防止佔用記憶體
+      kaomojiEl.addEventListener('animationend', () => {
+        kaomojiEl.remove();
+      });
     });
 
     // YouTube 點擊展開/收合
