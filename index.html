@@ -34,27 +34,26 @@
       justify-content: center;
       text-align: center;
       width: 100%;
-      max-width: 800px;
+      max-width: 1000px;
     }
 
-    /* 1. 小寫、方正、流暢打字效果 (jnis) */
+    /* 1. jnis 標題 (175%) - 間隔稍微加大 */
     .typewriter-wrapper {
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-bottom: 40px;
+      margin-bottom: 65px; /* 加大與下方按鈕的間隔 */
     }
 
     .typewriter {
       font-family: 'Press Start 2P', monospace, sans-serif;
-      font-size: 3.5rem;
-      text-transform: lowercase; /* 強制小寫 */
+      font-size: 6.1rem;
+      text-transform: lowercase;
       color: #ffffff;
       white-space: nowrap;
       overflow: hidden;
-      border-right: 4px solid #ffffff; /* 打字機游標 */
+      border-right: 6px solid #ffffff;
       width: 0;
-      /* 0.8 秒流暢逐字展開，游標保持閃爍 */
       animation: 
         typing 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) forwards,
         blink-caret 0.6s step-end infinite;
@@ -62,7 +61,7 @@
 
     @keyframes typing {
       from { width: 0; }
-      to { width: 220px; } /* 剛好容納 jnis 方塊寬度 */
+      to { width: 385px; }
     }
 
     @keyframes blink-caret {
@@ -70,21 +69,21 @@
       50% { border-color: #ffffff; }
     }
 
-    /* 2. 中間按鈕 */
+    /* 2. 中間按鈕 (110%) */
     .btn-jnii {
       display: inline-block;
-      padding: 16px 42px;
-      font-size: 1.3rem;
+      padding: 18px 46px;
+      font-size: 1.43rem;
       font-weight: 600;
       color: #ffffff;
       text-decoration: none;
       border: 3px solid #ffffff;
-      border-radius: 8px;
+      border-radius: 9px;
       background: transparent;
-      letter-spacing: 1.5px;
+      letter-spacing: 1.6px;
       cursor: pointer;
       transition: all 0.3s ease;
-      margin-bottom: 70px;
+      margin-bottom: 77px;
       
       opacity: 0;
       transform: scale(0.92);
@@ -94,7 +93,7 @@
     .btn-jnii:hover {
       background-color: #ffffff;
       color: #0d0d0d;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+      box-shadow: 0 0 22px rgba(255, 255, 255, 0.4);
       transform: scale(1.03);
     }
 
@@ -105,11 +104,11 @@
       }
     }
 
-    /* 3. 底部單行商務聯絡資訊（無超連結純文字） */
+    /* 3. 底部商務聯絡資訊 (110%) */
     .inquiry-text {
-      font-size: 1rem;
+      font-size: 1.1rem;
       color: #aaaaaa;
-      letter-spacing: 0.8px;
+      letter-spacing: 0.9px;
       white-space: nowrap;
       
       opacity: 0;
@@ -126,7 +125,7 @@
 <body>
 
   <div class="container">
-    <!-- 方正流暢打字登場的小寫 jnis -->
+    <!-- jnis 打字標題 -->
     <div class="typewriter-wrapper">
       <h1 class="typewriter">jnis</h1>
     </div>
@@ -134,7 +133,7 @@
     <!-- 中間按鈕 -->
     <a href="#" class="btn-jnii">@jnii2008</a>
 
-    <!-- 底部無超連結的純文字商務聯絡資訊 -->
+    <!-- 底部聯絡資訊 -->
     <p class="inquiry-text">
       Business Inquiries: jnis550088@gmail.com
     </p>
