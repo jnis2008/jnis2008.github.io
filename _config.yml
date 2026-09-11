@@ -1,6 +1,23 @@
 # jnis2008.github.io
 # @jnii2008
-<!DOCTYPE html>
+# 網站基本資訊
+title: 我的個人網站
+description: 這是我的 GitHub Pages 個人網站與專案展示
+author: jnis2008
+
+# GitHub Pages 網址設定
+url: "https://jnis2008.github.io"
+baseurl: ""  # 如果是 jnis2008.github.io 這種主站，這裡保持空白即可
+
+# 選用 Jekyll 免費主題（若不想用主題可刪除此行）
+theme: jekyll-theme-cayman
+
+# 建置時要忽略的檔案或資料夾
+exclude:
+  - README.md
+  - .gitignore
+
+  <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
@@ -43,7 +60,7 @@
     }
 
     /* 文字與畫筆路徑屬性 */
-    .path-text, .hand-drawn {
+    .path-text, .path-hand {
       fill: none;
       stroke: #ffffff;
       stroke-linecap: round;
@@ -95,7 +112,7 @@
       letter-spacing: 1px;
       cursor: pointer;
       transition: all 0.3s ease;
-      /* 延遲 3.2 秒，等文字快寫完時淡入登場 */
+      /* 延遲 3.2 秒，等手寫完時淡入登場 */
       animation: fadeInBtn 1.2s ease-out 3.2s forwards;
     }
 
@@ -104,7 +121,6 @@
       background-color: #ffffff;
       color: #0d0d0d;
       box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
-      transform: translateY(12px);
     }
 
     /* 按鈕淡入動畫 */
@@ -123,9 +139,7 @@
     <svg class="handwriting-svg" viewBox="0 0 320 120">
       <!-- 白線畫手掌與手指輪廓 -->
       <g class="path-hand">
-        <!-- 手腕與手掌白線線條 -->
         <path d="M 10 90 Q 25 85 40 90 T 55 85 Q 50 65 40 55 C 35 45 25 45 20 55 Z" />
-        <!-- 握筆手指線條 -->
         <path d="M 35 60 C 45 58 55 62 50 72 C 45 78 35 75 30 70" />
       </g>
 
