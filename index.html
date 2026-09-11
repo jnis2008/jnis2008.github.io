@@ -47,15 +47,15 @@
       background-color: var(--bg-color);
       color: var(--text-color);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      min-height: 100vh;
-      min-height: 100svh;
+      height: 100vh;
+      height: 100svh;
       display: flex;
       justify-content: center;
       align-items: center;
-      overflow-x: hidden;
+      overflow: hidden;
       position: relative;
       transition: background-color 0.4s ease, color 0.4s ease;
-      padding: 40px 20px;
+      padding: 0 20px;
     }
 
     /* ===== 左上角切換主題按鈕 ===== */
@@ -109,7 +109,7 @@
       text-shadow: 0 0 15px var(--logo-hover-shadow);
     }
 
-    /* 置中容器 */
+    /* 置中主容器 (固定高寬，防跑位) */
     .container {
       display: flex;
       flex-direction: column;
@@ -117,18 +117,19 @@
       justify-content: center;
       text-align: center;
       width: 100%;
-      max-width: 1000px;
       height: 100%;
-      min-height: calc(100vh - 80px);
-      min-height: calc(100svh - 80px);
+      max-width: 1000px;
       z-index: 1;
       position: relative;
     }
 
-    /* 第二頁開啟時調整容器佈局為上下推開 */
-    .container.page-two {
-      justify-content: space-between;
-      padding-top: 60px;
+    /* 首頁內容置中包覆區 */
+    .hero-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: auto 0;
     }
 
     /* 首頁打字標題 */
@@ -179,7 +180,6 @@
       letter-spacing: 1.6px;
       cursor: pointer;
       transition: all 0.3s ease;
-      margin-bottom: 110px;
       
       opacity: 0;
       transform: scale(0.92);
@@ -318,8 +318,7 @@
       flex-direction: column;
       align-items: center;
       width: 100%;
-      margin-top: auto;
-      padding-bottom: 10px;
+      padding-bottom: 25px;
     }
 
     .inquiry-text {
@@ -366,13 +365,13 @@
     }
 
     .copied-toast.pos-bottom {
-      top: 30px;
-      transform: translateY(-5px);
+      bottom: 55px;
+      transform: translateY(5px);
     }
 
     .copied-toast.pos-top {
-      bottom: 30px;
-      transform: translateY(5px);
+      bottom: 55px;
+      transform: translateY(-5px);
     }
 
     .copied-toast.show {
@@ -400,19 +399,6 @@
        📱 手機端 / Instagram 內建瀏覽器專用優化
     ========================================== */
     @media (max-width: 768px) {
-      body {
-        padding: 20px 15px;
-      }
-
-      .container {
-        min-height: calc(100vh - 40px);
-        min-height: calc(100svh - 40px);
-      }
-
-      .container.page-two {
-        padding-top: 45px;
-      }
-
       .theme-toggle-btn {
         top: 15px;
         left: 15px;
@@ -445,7 +431,6 @@
         padding: 8px 20px;
         font-size: 0.82rem;
         border-width: 2px;
-        margin-bottom: 35px;
       }
 
       .links-menu {
@@ -470,8 +455,9 @@
         border-width: 2px;
       }
 
+      /* 手機端底部文字向上移動避開導覽列 */
       .inquiry-wrapper {
-        padding-bottom: 5px;
+        padding-bottom: 45px;
       }
 
       .inquiry-text {
@@ -484,12 +470,9 @@
         font-size: 0.65rem;
       }
 
-      .copied-toast.pos-bottom {
-        top: 20px;
-      }
-
+      .copied-toast.pos-bottom,
       .copied-toast.pos-top {
-        bottom: 20px;
+        bottom: 70px;
       }
     }
 
@@ -522,13 +505,13 @@
   <div class="top-right-logo" id="topLogo">jnis</div>
 
   <div class="container" id="mainContainer">
-    <!-- 首頁標題 -->
-    <div class="typewriter-wrapper" id="homeTitle">
-      <h1 class="typewriter">jnis</h1>
+    <!-- 首頁居中主要內容 -->
+    <div class="hero-content" id="heroContent">
+      <div class="typewriter-wrapper" id="homeTitle">
+        <h1 class="typewriter">jnis</h1>
+      </div>
+      <a href="javascript:void(0);" class="btn-jnii" id="btnJnii">@jnii2008</a>
     </div>
-
-    <!-- 首頁中間按鈕 -->
-    <a href="javascript:void(0);" class="btn-jnii" id="btnJnii">@jnii2008</a>
 
     <!-- 第二頁選單 -->
     <div class="links-menu" id="linksMenu">
@@ -561,7 +544,7 @@
 
   <script>
     const btnJnii = document.getElementById('btnJnii');
-    const homeTitle = document.getElementById('homeTitle');
+    const heroContent = document.getElementById('heroContent');
     const linksMenu = document.getElementById('linksMenu');
     const topLogo = document.getElementById('topLogo');
     const inquiryText = document.getElementById('inquiryText');
@@ -569,7 +552,6 @@
     const themeToggleBtn = document.getElementById('themeToggleBtn');
     const ytWrapper = document.getElementById('ytWrapper');
     const ytTrigger = document.getElementById('ytTrigger');
-    const mainContainer = document.getElementById('mainContainer');
 
     let isSecondPage = false;
     let toastTimeout;
@@ -577,16 +559,13 @@
     // 頁面切換 logic
     btnJnii.addEventListener('click', function() {
       isSecondPage = true;
-      homeTitle.classList.add('fade-out');
-      btnJnii.classList.add('fade-out');
+      heroContent.classList.add('fade-out');
       inquiryText.classList.remove('init-fadeIn');
       inquiryText.classList.add('inquiry-hidden');
 
       setTimeout(() => {
-        homeTitle.style.display = 'none';
-        btnJnii.style.display = 'none';
+        heroContent.style.display = 'none';
 
-        mainContainer.classList.add('page-two');
         linksMenu.classList.add('active');
 
         requestAnimationFrame(() => {
@@ -614,14 +593,6 @@
     inquiryText.addEventListener('click', function() {
       const email = 'jnis550088@gmail.com';
       navigator.clipboard.writeText(email).then(() => {
-        if (isSecondPage) {
-          copiedToast.classList.remove('pos-bottom');
-          copiedToast.classList.add('pos-top');
-        } else {
-          copiedToast.classList.remove('pos-top');
-          copiedToast.classList.add('pos-bottom');
-        }
-
         copiedToast.classList.add('show');
 
         clearTimeout(toastTimeout);
