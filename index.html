@@ -262,7 +262,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 32px;
+      gap: 22px;
       width: 100%;
       max-width: 480px;
       pointer-events: none;
@@ -287,21 +287,22 @@
     }
 
     .links-menu.active .white-box-wrapper:nth-child(1) { transition-delay: 0.1s; }
-    .links-menu.active .white-box-wrapper:nth-child(2) { transition-delay: 0.25s; }
-    .links-menu.active .white-box-wrapper:nth-child(3) { transition-delay: 0.4s; }
+    .links-menu.active .white-box-wrapper:nth-child(2) { transition-delay: 0.2s; }
+    .links-menu.active .white-box-wrapper:nth-child(3) { transition-delay: 0.3s; }
+    .links-menu.active .white-box-wrapper:nth-child(4) { transition-delay: 0.4s; }
 
     .white-box {
       display: flex;
       justify-content: center;
       align-items: center;
       width: 100%;
-      height: 75px;
+      height: 65px;
       border: 3.5px solid var(--border-color);
       border-radius: 9px;
       background-color: var(--bg-color);
       color: var(--text-color);
       text-decoration: none;
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       font-weight: 700;
       letter-spacing: 2px;
       cursor: pointer;
@@ -349,13 +350,13 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 55px;
+      height: 50px;
       border: 3px solid var(--border-color);
       border-radius: 8px;
       background-color: var(--bg-color);
       color: var(--text-color);
       text-decoration: none;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       font-weight: 700;
       letter-spacing: 1px;
       transition: all 0.3s ease;
@@ -486,13 +487,13 @@
       }
 
       .links-menu {
-        gap: 15px;
+        gap: 12px;
         max-width: 260px;
       }
 
       .white-box {
-        height: 42px;
-        font-size: 0.88rem;
+        height: 38px;
+        font-size: 0.82rem;
         border-width: 2px;
       }
 
@@ -502,8 +503,8 @@
       }
 
       .yt-btn {
-        height: 35px;
-        font-size: 0.75rem;
+        height: 32px;
+        font-size: 0.72rem;
         border-width: 2px;
       }
 
@@ -572,10 +573,17 @@
 
       <!-- 第二頁選單 -->
       <div class="links-menu" id="linksMenu">
+        <!-- Discord -->
+        <div class="white-box-wrapper">
+          <a href="https://discord.gg/3TJWX3HFCs" target="_blank" class="white-box">Discord</a>
+        </div>
+
+        <!-- Twitch -->
         <div class="white-box-wrapper">
           <a href="https://www.twitch.tv/jnii2008" target="_blank" class="white-box">Twitch</a>
         </div>
 
+        <!-- Instagram -->
         <div class="white-box-wrapper">
           <a href="https://www.instagram.com/jnii2008/" target="_blank" class="white-box">Instagram</a>
         </div>
