@@ -29,6 +29,7 @@
       --inquiry-shine: #ffffff;
       --toast-color: #888888;
       --logo-hover-shadow: rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.6);
+      --clock-color: #ffffff;
     }
 
     /* 亮底 Theme (Light Mode) */
@@ -44,6 +45,7 @@
       --inquiry-shine: #000000;
       --toast-color: #555555;
       --logo-hover-shadow: rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.4);
+      --clock-color: #0d0d0d;
     }
 
     * {
@@ -368,6 +370,7 @@
       color: var(--text-color);
       opacity: 0.85;
       margin-bottom: 3px;
+      transition: color 0.4s ease;
     }
 
     .timezone-clock {
@@ -377,11 +380,12 @@
       height: 1.4rem;
       font-weight: 700;
       letter-spacing: 1.5px;
-      color: #ffffff;
+      color: var(--clock-color);
       cursor: default;
       padding: 0 10px;
       border: none;
       background: transparent;
+      transition: color 0.4s ease;
     }
 
     /* 外層 Wrapper */
@@ -433,9 +437,10 @@
       cursor: pointer;
       transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
       line-height: 1;
+      -webkit-tap-highlight-color: transparent;
     }
 
-    .white-box:hover {
+    .white-box:hover, .white-box:active {
       background-color: var(--hover-bg);
       color: var(--hover-text);
       box-shadow: 0 0 25px var(--box-shadow-color);
@@ -487,9 +492,10 @@
       letter-spacing: 1px;
       transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
       line-height: 1;
+      -webkit-tap-highlight-color: transparent;
     }
 
-    .yt-btn:hover {
+    .yt-btn:hover, .yt-btn:active {
       background-color: var(--hover-bg);
       color: var(--hover-text);
       box-shadow: 0 0 18px var(--box-shadow-color);
@@ -577,9 +583,9 @@
         font-size: 0.65rem;
       }
 
-      /* 手機端 Home 按鈕往上移 */
+      /* 手機端 Home 按鈕往上移（不貼底） */
       .back-home-btn {
-        bottom: 25px;
+        bottom: 55px;
         left: 15px;
         padding: 4px 12px;
         font-size: 0.65rem;
@@ -636,9 +642,9 @@
         border-width: 2px;
       }
 
-      /* 手機端 Business Inquiries 這一行往上移 */
+      /* 手機端 Business Inquiries 這一行往上移（不貼底） */
       .inquiry-wrapper {
-        padding-bottom: 25px;
+        padding-bottom: 50px;
       }
 
       .inquiry-text {
