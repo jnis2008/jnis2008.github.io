@@ -29,6 +29,7 @@
       --inquiry-shine: #ffffff;
       --toast-color: #888888;
       --logo-hover-shadow: rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.6);
+      --pixel-color: #ffffff;
     }
 
     /* 亮底 Theme (Light Mode) */
@@ -44,6 +45,7 @@
       --inquiry-shine: #000000;
       --toast-color: #555555;
       --logo-hover-shadow: rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.4);
+      --pixel-color: #0d0d0d;
     }
 
     * {
@@ -82,7 +84,7 @@
       height: 400px;
       border-radius: 50%;
       background: radial-gradient(circle, var(--glow-color) 0%, rgba(0,0,0,0) 70%);
-      pointer-events: none; /* 防止遮擋鼠標點擊事件 */
+      pointer-events: none;
       transform: translate(-50%, -50%);
       transition: opacity 0.3s ease;
       z-index: 0;
@@ -206,7 +208,7 @@
       }
     }
 
-    /* 置中主容器 (固定高寬，防跑位) */
+    /* 置中主容器 */
     .container {
       display: flex;
       flex-direction: column;
@@ -220,7 +222,7 @@
       position: relative;
     }
 
-    /* 中央區域：利用 Grid 重疊兩頁內容，支援流暢淡入淡出 */
+    /* 中央區域 */
     .content-stage {
       display: grid;
       place-items: center;
@@ -328,7 +330,33 @@
       pointer-events: none;
     }
 
-    /* 外層 Wrapper 控制淡入淡出滑動動畫 */
+    /* 像素畫布容器 (Discord 按鈕上方) */
+    .pixel-canvas-wrapper {
+      width: 100%;
+      height: 70px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      margin-bottom: -10px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .links-menu.active .pixel-canvas-wrapper {
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: 0.05s;
+    }
+
+    #pixelCanvas {
+      width: 100%;
+      height: 70px;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+
+    /* 外層 Wrapper */
     .white-box-wrapper {
       width: 100%;
       position: relative;
@@ -348,13 +376,13 @@
       transform: translateY(0) scale(1);
     }
 
-    .links-menu.active .white-box-wrapper:nth-child(1) { transition-delay: 0.1s; }
-    .links-menu.active .white-box-wrapper:nth-child(2) { transition-delay: 0.2s; }
-    .links-menu.active .white-box-wrapper:nth-child(3) { transition-delay: 0.3s; }
-    .links-menu.active .white-box-wrapper:nth-child(4) { transition-delay: 0.4s; }
+    .links-menu.active .white-box-wrapper:nth-child(2) { transition-delay: 0.1s; }
+    .links-menu.active .white-box-wrapper:nth-child(3) { transition-delay: 0.2s; }
+    .links-menu.active .white-box-wrapper:nth-child(4) { transition-delay: 0.3s; }
+    .links-menu.active .white-box-wrapper:nth-child(5) { transition-delay: 0.4s; }
 
-    /* 退場時平滑隱藏 */
-    .links-menu.fade-out .white-box-wrapper {
+    .links-menu.fade-out .white-box-wrapper,
+    .links-menu.fade-out .pixel-canvas-wrapper {
       opacity: 0;
       transform: translateY(20px) scale(0.95);
       transition-delay: 0s !important;
@@ -511,9 +539,7 @@
       transform: translateY(0) !important;
     }
 
-    /* ==========================================
-       📱 手機端 / Instagram 內建瀏覽器專用優化
-    ========================================== */
+    /* 手機端適配 */
     @media (max-width: 768px) {
       .theme-toggle-btn {
         top: 15px;
@@ -537,10 +563,6 @@
 
       .top-right-logo {
         font-size: 1.2rem;
-      }
-
-      .falling-kaomoji {
-        font-size: 0.9rem;
       }
 
       .typewriter-wrapper {
@@ -602,24 +624,14 @@
       .copied-toast.pos-bottom {
         bottom: 70px;
       }
-    }
 
-    @media (max-width: 380px) {
-      .typewriter {
-        font-size: 1.8rem;
+      .pixel-canvas-wrapper {
+        height: 55px;
+        margin-bottom: -5px;
       }
 
-      @keyframes typing {
-        from { width: 0; }
-        to { width: 115px; }
-      }
-
-      .links-menu {
-        max-width: 230px;
-      }
-
-      .inquiry-text {
-        font-size: 0.58rem;
+      #pixelCanvas {
+        height: 55px;
       }
     }
   </style>
@@ -642,7 +654,7 @@
 
   <div class="container" id="mainContainer">
     
-    <!-- 舞台區域：重疊首頁與選單頁以進行平滑轉場 -->
+    <!-- 舞台區域 -->
     <div class="content-stage">
       <!-- 首頁內容 -->
       <div class="hero-content" id="heroContent">
@@ -654,6 +666,12 @@
 
       <!-- 第二頁選單 -->
       <div class="links-menu" id="linksMenu">
+        
+        <!-- 像素貓狗樹木動態 Canvas -->
+        <div class="pixel-canvas-wrapper">
+          <canvas id="pixelCanvas" width="480" height="70"></canvas>
+        </div>
+
         <!-- Discord -->
         <div class="white-box-wrapper">
           <a href="https://discord.gg/3TJWX3HFCs" target="_blank" class="white-box">Discord</a>
@@ -680,7 +698,7 @@
       </div>
     </div>
 
-    <!-- 底部聯絡資訊與複製提示 -->
+    <!-- 底部聯絡資訊 -->
     <div class="inquiry-wrapper">
       <div class="copied-toast pos-bottom" id="copiedToast">Copied!</div>
       <p class="inquiry-text init-fadeIn" id="inquiryText">
@@ -703,9 +721,7 @@
     const cursorGlow = document.getElementById('cursorGlow');
 
     let toastTimeout;
-
-    // 表情符號隨機列表
-    const kaomojis = ['><', '(ﾉ∀`*)', '(≧∀≦)ゞ', 'ヾ(*´∀ ˋ*)ﾉ', '(*ﾟ∀ﾟ*)', '(;´༎ຶД༎ຶ`)', '( °3°)', '(つ´ω`)つ'];
+    const kaomojis = ['><', '(ﾉ∀`*)', '(≧∀∀)ゞ', 'ヾ(*´∀ ˋ*)ﾉ', '(*ﾟ∀ﾟ*)', '(;´༎ຶД༎ຶ`)', '( °3°)', '(つ´ω`)つ'];
     let kaomojiIndex = 0;
 
     // ===== 鼠標發光跟隨邏輯 =====
@@ -717,7 +733,7 @@
     document.addEventListener('mouseleave', () => cursorGlow.style.opacity = '0');
     document.addEventListener('mouseenter', () => cursorGlow.style.opacity = '1');
 
-    // ===== 進入第二頁 =====
+    // ===== 頁面切換 =====
     btnJnii.addEventListener('click', function() {
       heroContent.classList.add('fade-out');
       inquiryText.classList.remove('init-fadeIn');
@@ -736,7 +752,6 @@
       }, 350);
     });
 
-    // ===== 左下角按鈕淡出回到首頁 =====
     backHomeBtn.addEventListener('click', function() {
       linksMenu.classList.add('fade-out');
       linksMenu.classList.remove('active');
@@ -755,20 +770,17 @@
       }, 350);
     });
 
-    // 右上角 jnis 點擊爆發拋物掉落表情符號
+    // 右上角 jnis 點擊爆發表情
     topLogo.addEventListener('click', function(e) {
       e.stopPropagation();
-
       const rect = topLogo.getBoundingClientRect();
       const kaomojiEl = document.createElement('div');
       kaomojiEl.className = 'falling-kaomoji';
       kaomojiEl.textContent = kaomojis[kaomojiIndex];
-
       kaomojiIndex = (kaomojiIndex + 1) % kaomojis.length;
 
       const startX = rect.left + rect.width / 2 - 20;
       const startY = rect.bottom + 5;
-
       const randomOffsetX = (Math.random() - 0.5) * 80 + 'px';
       const randomRotation = (Math.random() - 0.5) * 60 + 'deg';
 
@@ -778,47 +790,212 @@
       kaomojiEl.style.setProperty('--rot', randomRotation);
 
       document.body.appendChild(kaomojiEl);
-
-      kaomojiEl.addEventListener('animationend', () => {
-        kaomojiEl.remove();
-      });
+      kaomojiEl.addEventListener('animationend', () => kaomojiEl.remove());
     });
 
-    // YouTube 點擊展開/收合
+    // YouTube 選單
     ytTrigger.addEventListener('click', function(e) {
       e.stopPropagation();
       ytWrapper.classList.toggle('open');
     });
 
-    // 點擊頁面其他地方自動收合 YouTube 選單
     document.addEventListener('click', function(e) {
       if (!ytWrapper.contains(e.target)) {
         ytWrapper.classList.remove('open');
       }
     });
 
-    // 點擊複製 Email 功能
+    // 複製 Email
     inquiryText.addEventListener('click', function() {
-      const email = 'jnis550088@gmail.com';
-      navigator.clipboard.writeText(email).then(() => {
+      navigator.clipboard.writeText('jnis550088@gmail.com').then(() => {
         copiedToast.classList.add('show');
-
         clearTimeout(toastTimeout);
-        toastTimeout = setTimeout(() => {
-          copiedToast.classList.remove('show');
-        }, 2000);
+        toastTimeout = setTimeout(() => copiedToast.classList.remove('show'), 2000);
       });
     });
 
     // 主題切換
     themeToggleBtn.addEventListener('click', function() {
       document.body.classList.toggle('light-theme');
-      if (document.body.classList.contains('light-theme')) {
-        themeToggleBtn.textContent = 'Light';
-      } else {
-        themeToggleBtn.textContent = 'Dark';
-      }
+      themeToggleBtn.textContent = document.body.classList.contains('light-theme') ? 'Light' : 'Dark';
     });
+
+    // ========================================================
+    // ===== 像素風格 Canvas (白色地平線 + 樹 + 隨機走動貓狗) =====
+    // ========================================================
+    const canvas = document.getElementById('pixelCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // 像素陣列定義 (1 代表像素點，0 代表透明)
+    // 樹 A (大樹)
+    const treeLarge = [
+      [0,0,0,0,1,0,0,0,0],
+      [0,0,0,1,1,1,0,0,0],
+      [0,0,1,1,1,1,1,0,0],
+      [0,1,1,1,1,1,1,1,0],
+      [1,1,1,1,1,1,1,1,1],
+      [0,0,0,1,1,0,0,0,0],
+      [0,0,0,1,1,0,0,0,0],
+      [0,0,0,1,1,0,0,0,0]
+    ];
+
+    // 樹 B (小樹)
+    const treeSmall = [
+      [0,0,1,0,0],
+      [0,1,1,1,0],
+      [1,1,1,1,1],
+      [0,0,1,0,0],
+      [0,0,1,0,0]
+    ];
+
+    // 貓咪 - 站立與走路雙幀
+    const catFrame1 = [
+      [0,1,0,0,1,0,0,0],
+      [1,1,1,1,1,0,0,0],
+      [1,1,1,1,1,1,1,1],
+      [0,1,1,1,1,1,1,0],
+      [0,1,0,0,0,0,1,0]
+    ];
+    const catFrame2 = [
+      [0,1,0,0,1,0,0,0],
+      [1,1,1,1,1,0,0,0],
+      [1,1,1,1,1,1,1,1],
+      [0,1,1,1,1,1,1,0],
+      [0,0,1,0,0,1,0,0]
+    ];
+
+    // 狗狗 - 站立與走路雙幀 (耳垂、狗尾巴)
+    const dogFrame1 = [
+      [1,1,0,0,0,0,0,0],
+      [1,1,1,1,1,0,0,1],
+      [0,1,1,1,1,1,1,1],
+      [0,1,1,1,1,1,1,0],
+      [0,1,0,0,0,0,1,0]
+    ];
+    const dogFrame2 = [
+      [1,1,0,0,0,0,0,0],
+      [1,1,1,1,1,0,0,1],
+      [0,1,1,1,1,1,1,1],
+      [0,1,1,1,1,1,1,0],
+      [0,0,1,0,0,1,0,0]
+    ];
+
+    // 通用繪製像素矩陣函式
+    function drawPixelMatrix(matrix, startX, startY, pixelSize, dir, color) {
+      ctx.fillStyle = color;
+      const rows = matrix.length;
+      const cols = matrix[0].length;
+
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          if (matrix[r][c] === 1) {
+            // dir === 1 朝右，dir === -1 水平翻轉朝左
+            const actualC = (dir === 1) ? c : (cols - 1 - c);
+            ctx.fillRect(startX + actualC * pixelSize, startY + r * pixelSize, pixelSize, pixelSize);
+          }
+        }
+      }
+    }
+
+    // 樹木放置位置
+    const treePositions = [
+      { type: treeLarge, x: 70 },
+      { type: treeSmall, x: 190 },
+      { type: treeLarge, x: 380 }
+    ];
+
+    // 貓狗動物角色類別
+    class PixelAnimal {
+      constructor(type, startX, speed) {
+        this.type = type; // 'cat' or 'dog'
+        this.x = startX;
+        this.speed = speed;
+        this.dir = Math.random() < 0.5 ? 1 : -1;
+        this.isMoving = true;
+        this.frameTimer = 0;
+        this.currentFrame = 0;
+        this.stateTimer = Math.floor(Math.random() * 120) + 60;
+      }
+
+      update() {
+        // 隨機切換移動 / 靜止狀態
+        this.stateTimer--;
+        if (this.stateTimer <= 0) {
+          this.isMoving = Math.random() < 0.75;
+          if (Math.random() < 0.5) this.dir *= -1; // 隨機轉向
+          this.stateTimer = Math.floor(Math.random() * 180) + 60;
+        }
+
+        if (this.isMoving) {
+          this.x += this.speed * this.dir;
+
+          // 腳步走路動畫切換
+          this.frameTimer++;
+          if (this.frameTimer >= 10) {
+            this.currentFrame = (this.currentFrame === 0) ? 1 : 0;
+            this.frameTimer = 0;
+          }
+
+          // 邊界反彈
+          if (this.x < 20) {
+            this.x = 20;
+            this.dir = 1;
+          } else if (this.x > 440) {
+            this.x = 440;
+            this.dir = -1;
+          }
+        } else {
+          this.currentFrame = 0; // 靜止時維持預設幀
+        }
+      }
+
+      draw(groundY, pixelSize, color) {
+        const frames = (this.type === 'cat') ? [catFrame1, catFrame2] : [dogFrame1, dogFrame2];
+        const matrix = frames[this.currentFrame];
+        const animalHeight = matrix.length * pixelSize;
+        const drawY = groundY - animalHeight;
+        
+        drawPixelMatrix(matrix, Math.floor(this.x), drawY, pixelSize, this.dir, color);
+      }
+    }
+
+    // 初始化貓狗物件
+    const animals = [
+      new PixelAnimal('cat', 120, 0.7),
+      new PixelAnimal('dog', 280, 0.8)
+    ];
+
+    // 動態繪製主迴圈
+    function renderPixelScene() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // 動態讀取當前 CSS 主題顏色
+      const pixelColor = getComputedStyle(document.documentElement).getPropertyValue('--pixel-color').trim() || '#ffffff';
+      
+      const groundY = 60; // 地平線 Y 軸高度
+      const pixelSize = 3; // 像素放大倍數
+
+      // 1. 繪製底部 4px 像素地平線
+      ctx.fillStyle = pixelColor;
+      ctx.fillRect(0, groundY, canvas.width, 4);
+
+      // 2. 繪製固定像素樹木
+      treePositions.forEach(tree => {
+        const treeH = tree.type.length * pixelSize;
+        drawPixelMatrix(tree.type, tree.x, groundY - treeH, pixelSize, 1, pixelColor);
+      });
+
+      // 3. 更新並繪製貓咪與狗狗
+      animals.forEach(animal => {
+        animal.update();
+        animal.draw(groundY, pixelSize, pixelColor);
+      });
+
+      requestAnimationFrame(renderPixelScene);
+    }
+
+    // 啟動像素動畫
+    renderPixelScene();
   </script>
 
 </body>
