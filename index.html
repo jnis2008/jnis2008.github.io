@@ -3,9 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>jnis - twitch</title>
+  <title>jnis2008</title>
+  <!-- 導入美化手寫字體 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
   <style>
-    /* Global Styles */
+    /* 全局樣式 */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -19,82 +23,80 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      overflow: hidden; /* Prevent scrolling during animation */
+      overflow: hidden;
     }
 
-    /* Container for Layout */
+    /* 置中容器 */
     .container {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 30px; /* Space between elements */
       text-align: center;
-      position: relative;
+      width: 100%;
+      max-width: 800px;
     }
 
-    /* 1. JNIS Beautified SVG Animation */
-    .handwriting-svg {
-      width: 400px; /* Increased size for prominence */
-      height: 150px;
-      overflow: visible;
+    /* 1. 打字機動畫美化文字 (jnis) */
+    .typewriter-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 35px;
     }
 
-    .path-text {
-      fill: none;
-      stroke: #ffffff;
-      stroke-width: 4.5;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      stroke-dasharray: 1000;
-      stroke-dashoffset: 1000;
-      /* Animation settings */
-      animation: writeText 3.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    .typewriter {
+      font-family: 'Permanent Marker', cursive, cursive-style;
+      font-size: 5rem;
+      letter-spacing: 6px;
+      color: #ffffff;
+      white-space: nowrap;
+      overflow: hidden;
+      border-right: 4px solid #ffffff; /* 打字機游標 */
+      width: 0;
+      /* 1.2 秒快速打字完成，游標打完後消失 */
+      animation: 
+        typing 1.2s steps(4, end) forwards,
+        blink-caret 0.6s step-end 3 forwards;
     }
 
-    /* Professional Script Font Simulation Paths (j n i s) */
-    .char-j { d: path("M 60 45 L 60 85 C 60 100 45 105 38 95"); }
-    .char-j-dot { d: path("M 60 30 m -1.5 0 a 1.5 1.5 0 1 0 3 0 a 1.5 1.5 0 1 0 -3 0"); fill: #ffffff; stroke: none;}
-
-    .char-n { d: path("M 85 85 L 85 55 C 85 45 105 45 105 58 L 105 85"); }
-
-    .char-i { d: path("M 130 55 L 130 85"); }
-    .char-i-dot { d: path("M 130 40 m -1.5 0 a 1.5 1.5 0 1 0 3 0 a 1.5 1.5 0 1 0 -3 0"); fill: #ffffff; stroke: none;}
-
-    .char-s { d: path("M 175 58 C 170 50 150 52 152 65 C 154 78 175 72 173 83 C 170 92 150 90 148 82"); }
-
-    @keyframes writeText {
-      to {
-        stroke-dashoffset: 0;
-      }
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 200px; } /* 適配 jnis 寬度 */
     }
 
-    /* 2. Middle Button - Larger & Professional */
+    @keyframes blink-caret {
+      from, to { border-color: transparent; }
+      50% { border-color: #ffffff; }
+    }
+
+    /* 2. 中間按鈕 - 加速登場 */
     .btn-jnii {
       display: inline-block;
-      padding: 18px 45px; /* Significantly increased padding */
-      font-size: 1.4rem;  /* Larger font size */
+      padding: 16px 42px;
+      font-size: 1.3rem;
       font-weight: 600;
       color: #ffffff;
       text-decoration: none;
-      border: 3px solid #ffffff; /* Thicker border */
-      border-radius: 8px; /* Slightly smoother corners */
+      border: 3px solid #ffffff;
+      border-radius: 8px;
       background: transparent;
       letter-spacing: 1.5px;
       cursor: pointer;
       transition: all 0.3s ease;
+      margin-bottom: 70px; /* 與底部文字拉開距離 */
       
-      /* Animation settings - Fade in and scale up */
+      /* 打字快完時快速淡入（延遲縮短至 0.8s） */
       opacity: 0;
-      transform: scale(0.9);
-      animation: fadeInBtn 0.8s ease-out 3.2s forwards; /* Starts as text completes */
+      transform: scale(0.92);
+      animation: fadeInBtn 0.4s ease-out 0.8s forwards;
     }
 
     .btn-jnii:hover {
       background-color: #ffffff;
       color: #0d0d0d;
-      box-shadow: 0 0 25px rgba(255, 255, 255, 0.5);
-      transform: scale(1.05); /* Slightly bigger on hover */
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+      transform: scale(1.03);
     }
 
     @keyframes fadeInBtn {
@@ -104,56 +106,49 @@
       }
     }
 
-    /* 3. Bottom Blue Contact Box with Text */
-    .blue-box {
-      width: 450px; /* Custom width for centered text */
-      margin-top: 50px;
-      padding: 20px;
-      border: 4px solid #4a90e2; /* Blue border */
-      border-radius: 10px;
-      background-color: transparent;
-      opacity: 0;
-      animation: fadeInBlue 1s ease-out 4s forwards; /* Starts after button */
-    }
-
+    /* 3. 底部文字 - 水平單行、無藍框、微調偏下 */
     .inquiry-text {
       font-size: 1rem;
-      color: #ffffff;
-      letter-spacing: 0.5px;
-      line-height: 1.6;
+      color: #aaaaaa;
+      letter-spacing: 0.8px;
+      white-space: nowrap; /* 確保保持單行 */
+      
+      opacity: 0;
+      animation: fadeInText 0.6s ease-out 1.2s forwards;
     }
 
-    @keyframes fadeInBlue {
+    .inquiry-text a {
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .inquiry-text a:hover {
+      text-decoration: underline;
+    }
+
+    @keyframes fadeInText {
       to {
         opacity: 1;
       }
     }
-
   </style>
 </head>
 <body>
 
   <div class="container">
-    <!-- JNIS Beautified Handwriting Animation -->
-    <svg class="handwriting-svg" viewBox="0 0 320 120">
-      <path class="path-text char-j" />
-      <path class="char-j-dot" />
-      
-      <path class="path-text char-n" />
-      
-      <path class="path-text char-i" />
-      <path class="char-i-dot" />
-      
-      <path class="path-text char-s" />
-    </svg>
+    <!-- 打字機登場的美化 jnis -->
+    <div class="typewriter-wrapper">
+      <h1 class="typewriter">jnis</h1>
+    </div>
 
-    <!-- Larger, professional central button -->
+    <!-- 加速登場的中間按鈕 -->
     <a href="#" class="btn-jnii">@jnii2008</a>
 
-    <!-- Bottom blue box with Inquiry Text -->
-    <div class="blue-box">
-      <p class="inquiry-text">Business Inquiries: <br> jnis550088@gmail.com</p>
-    </div>
+    <!-- 底部單行商務聯絡文字（無藍框） -->
+    <p class="inquiry-text">
+      Business Inquiries: <a href="mailto:jnis550088@gmail.com">jnis550088@gmail.com</a>
+    </p>
   </div>
 
 </body>
