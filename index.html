@@ -83,11 +83,18 @@
       box-shadow: 0 0 15px var(--box-shadow-color);
     }
 
-    /* ===== 右上角固定標題 jnis ===== */
-    .top-right-logo {
+    /* ===== 右上角固定標題 jnis & 表情符號容器 ===== */
+    .top-right-wrapper {
       position: absolute;
       top: 40px;
       right: 50px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      z-index: 10;
+    }
+
+    .top-right-logo {
       font-family: 'Press Start 2P', monospace, sans-serif;
       font-size: 2.2rem;
       color: var(--text-color);
@@ -95,8 +102,8 @@
       pointer-events: none;
       transform: translateY(-20px);
       transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), text-shadow 0.3s ease;
-      z-index: 10;
       cursor: pointer;
+      user-select: none;
     }
 
     .top-right-logo.visible {
@@ -107,6 +114,24 @@
 
     .top-right-logo:hover {
       text-shadow: 0 0 15px var(--logo-hover-shadow);
+    }
+
+    /* 右上角點擊出現的文字表情 */
+    .kaomoji-popup {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-color);
+      margin-top: 10px;
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .kaomoji-popup.show {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     /* 置中主容器 (固定高寬，防跑位) */
@@ -416,10 +441,18 @@
         font-size: 0.65rem;
       }
 
-      .top-right-logo {
+      .top-right-wrapper {
         top: 15px;
         right: 15px;
+      }
+
+      .top-right-logo {
         font-size: 1.2rem;
+      }
+
+      .kaomoji-popup {
+        font-size: 0.75rem;
+        margin-top: 5px;
       }
 
       .typewriter-wrapper {
@@ -509,8 +542,11 @@
   <!-- 左上角切換暗底/亮底按鈕 -->
   <button class="theme-toggle-btn" id="themeToggleBtn">Dark</button>
 
-  <!-- 右上角固定標題 jnis -->
-  <div class="top-right-logo" id="topLogo">jnis</div>
+  <!-- 右上角固定標題 jnis 與表情包顯示容器 -->
+  <div class="top-right-wrapper">
+    <div class="top-right-logo" id="topLogo">jnis</div>
+    <div class="kaomoji-popup" id="kaomojiPopup"></div>
+  </div>
 
   <div class="container" id="mainContainer">
     
@@ -559,6 +595,7 @@
     const heroContent = document.getElementById('heroContent');
     const linksMenu = document.getElementById('linksMenu');
     const topLogo = document.getElementById('topLogo');
+    const kaomojiPopup = document.getElementById('kaomojiPopup');
     const inquiryText = document.getElementById('inquiryText');
     const copiedToast = document.getElementById('copiedToast');
     const themeToggleBtn = document.getElementById('themeToggleBtn');
@@ -566,15 +603,18 @@
     const ytTrigger = document.getElementById('ytTrigger');
 
     let toastTimeout;
+    let kaomojiTimeout;
+
+    // 表情符號循環列表
+    const kaomojis = ['><', '(ﾉ∀`*)', '(≧∀≦)ゞ', 'ヾ(*´∀ ˋ*)ﾉ'];
+    let kaomojiIndex = 0;
 
     // 頁面切換 logic (流暢淡入淡出)
     btnJnii.addEventListener('click', function() {
-      // 1. 首頁與底部 Email 開始淡出
       heroContent.classList.add('fade-out');
       inquiryText.classList.remove('init-fadeIn');
       inquiryText.classList.add('inquiry-hidden');
 
-      // 2. 淡出完成後，顯示右上角 logo，並淡入第二頁選單與 Email
       setTimeout(() => {
         linksMenu.classList.add('active');
         topLogo.classList.add('visible');
@@ -584,6 +624,20 @@
           inquiryText.classList.add('inquiry-visible');
         });
       }, 350);
+    });
+
+    // 右上角 jnis 點擊循環表情符號
+    topLogo.addEventListener('click', function() {
+      kaomojiPopup.textContent = kaomojis[kaomojiIndex];
+      kaomojiPopup.classList.add('show');
+
+      // 下一次點擊切換下一個表情
+      kaomojiIndex = (kaomojiIndex + 1) % kaomojis.length;
+
+      clearTimeout(kaomojiTimeout);
+      kaomojiTimeout = setTimeout(() => {
+        kaomojiPopup.classList.remove('show');
+      }, 2500);
     });
 
     // YouTube 點擊展開/收合
