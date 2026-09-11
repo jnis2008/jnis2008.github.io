@@ -351,16 +351,10 @@
       font-family: 'Press Start 2P', monospace, sans-serif;
       font-size: 1.15rem;
       color: var(--text-color);
-      cursor: pointer;
+      cursor: default;
       padding: 6px 14px;
       border: none;
       background: transparent;
-      transition: color 0.3s ease, text-shadow 0.3s ease, transform 0.2s ease;
-    }
-
-    .timezone-clock:hover {
-      text-shadow: 0 0 15px var(--box-shadow-color);
-      transform: scale(1.05);
     }
 
     /* 外層 Wrapper */
@@ -680,9 +674,9 @@
       <!-- 第二頁選單 -->
       <div class="links-menu" id="linksMenu">
         
-        <!-- 時區時鐘 (點擊可切換時區) -->
+        <!-- 時鐘 (依據訪客電腦系統時間並顯示 AM/PM) -->
         <div class="time-display-wrapper">
-          <button class="timezone-clock" id="timezoneClock" title="Click to change timezone">00:00</button>
+          <div class="timezone-clock" id="timezoneClock">00:00 AM</div>
         </div>
 
         <!-- Discord -->
@@ -738,42 +732,21 @@
     const kaomojis = ['><', '(ﾉ∀`*)', '(≧∀≦)ゞ', 'ヾ(*´∀ ˋ*)ﾉ', '(*ﾟ∀ﾟ*)', '(;´༎ຶД༎ຶ`)', '( °3°)', '(つ´ω`)つ'];
     let kaomojiIndex = 0;
 
-    // ===== 時區切換設定 =====
-    const timezones = [
-      { name: 'TPE', zone: 'Asia/Taipei' },
-      { name: 'LAX', zone: 'America/Los_Angeles' },
-      { name: 'NYC', zone: 'America/New_York' },
-      { name: 'TYO', zone: 'Asia/Tokyo' },
-      { name: 'LON', zone: 'Europe/London' },
-      { name: 'PAR', zone: 'Europe/Paris' },
-      { name: 'SEL', zone: 'Asia/Seoul' }
-    ];
-    let currentTimezoneIndex = 0;
-
+    // ===== 系統時間與 AM/PM 顯示邏輯 =====
     function updateClock() {
-      const currentTz = timezones[currentTimezoneIndex];
       const now = new Date();
-      try {
-        const options = {
-          timeZone: currentTz.zone,
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: false
-        };
-        const formatter = new Intl.DateTimeFormat('en-GB', options);
-        let timeString = formatter.format(now);
-        if (timeString === '24:00') timeString = '00:00';
-        timezoneClock.textContent = `${timeString} [${currentTz.name}]`;
-      } catch (e) {
-        timezoneClock.textContent = '00:00 [UTC]';
-      }
+      let hours = now.getHours();
+      const minutes = now.getMinutes();
+      
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12;
+      hours = hours ? hours : 12; // 0點顯示為 12
+      
+      const formattedHours = String(hours).padStart(2, '0');
+      const formattedMinutes = String(minutes).padStart(2, '0');
+      
+      timezoneClock.textContent = `${formattedHours}:${formattedMinutes} ${ampm}`;
     }
-
-    // 點擊時鐘切換時區
-    timezoneClock.addEventListener('click', () => {
-      currentTimezoneIndex = (currentTimezoneIndex + 1) % timezones.length;
-      updateClock();
-    });
 
     // 每秒更新時鐘
     setInterval(updateClock, 1000);
