@@ -1,0 +1,14 @@
+# jnis2008.github.io
+# @jnii2008
+title: 我的個人網站
+description: 這是我的 GitHub Pages 個人網站與專案展示
+author: jnis2008
+
+url: "https://jnis2008.github.io"
+baseurl: ""  
+
+theme: jekyll-theme-cayman
+
+exclude:
+  - README.md
+  - .gitignore
