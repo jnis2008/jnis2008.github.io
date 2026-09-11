@@ -2,721 +2,200 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>jnis2008</title>
-  <!-- 導入方正幾何風格字體 Press Start 2P -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>jnis</title>
+
+  <!-- Open Graph 預覽設定 -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="jnis">
+  <meta property="og:description" content="Welcome to jnis personal site.">
+  <meta property="og:image" content="og-image.png">
+
   <style>
-    /* 全局變數 (預設為暗底 Dark Mode) */
-    :root {
-      --bg-color: #0d0d0d;
-      --text-color: #ffffff;
-      --border-color: #ffffff;
-      --hover-bg: #ffffff;
-      --hover-text: #0d0d0d;
-      --box-shadow-color: rgba(255, 255, 255, 0.4);
-      --inquiry-base: #888888;
-      --inquiry-shine: #ffffff;
-      --toast-color: #888888;
-      --logo-hover-shadow: rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.6);
-    }
-
-    /* 亮底 Theme (Light Mode) */
-    body.light-theme {
-      --bg-color: #f5f5f5;
-      --text-color: #0d0d0d;
-      --border-color: #0d0d0d;
-      --hover-bg: #0d0d0d;
-      --hover-text: #ffffff;
-      --box-shadow-color: rgba(0, 0, 0, 0.3);
-      --inquiry-base: #777777;
-      --inquiry-shine: #000000;
-      --toast-color: #555555;
-      --logo-hover-shadow: rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.4);
-    }
-
+    /* ----- 基礎與全域樣式 ----- */
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      /* 全局禁止文字反白/選取 */
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
-      -webkit-touch-callout: none;
+      box-sizing: border-box;
     }
 
     body {
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      height: 100vh;
-      height: 100svh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-      position: relative;
-      transition: background-color 0.4s ease, color 0.4s ease;
-      padding: 0 20px;
+      background-color: #0d0d0d;
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
     }
 
-    /* ===== 左上角切換主題按鈕 ===== */
-    .theme-toggle-btn {
-      position: absolute;
-      top: 40px;
-      left: 50px;
-      background: transparent;
-      border: 2px solid var(--border-color);
-      color: var(--text-color);
-      padding: 8px 0;
-      min-width: 85px;
-      text-align: center;
-      font-size: 0.85rem;
-      font-weight: 700;
-      border-radius: 20px;
-      cursor: pointer;
-      z-index: 100;
-      transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .theme-toggle-btn:hover {
-      background-color: var(--hover-bg);
-      color: var(--hover-text);
-      box-shadow: 0 0 15px var(--box-shadow-color);
-    }
-
-    /* ===== 右上角固定標題 jnis ===== */
-    .top-right-wrapper {
-      position: absolute;
-      top: 40px;
-      right: 50px;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      z-index: 100;
-    }
-
-    .top-right-logo {
-      font-family: 'Press Start 2P', monospace, sans-serif;
-      font-size: 2.2rem;
-      color: var(--text-color);
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(-20px);
-      transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), text-shadow 0.3s ease;
-      cursor: pointer;
-    }
-
-    .top-right-logo.visible {
-      opacity: 1;
-      transform: translateY(0);
-      pointer-events: auto;
-    }
-
-    .top-right-logo:hover {
-      text-shadow: 0 0 15px var(--logo-hover-shadow);
-    }
-
-    /* 動態生成的拋物掉落表情 */
-    .falling-kaomoji {
+    /* ----- 1. 鼠標發光特效 (Cursor Glow) ----- */
+    .cursor-glow {
       position: fixed;
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--text-color);
-      pointer-events: none;
-      white-space: nowrap;
-      z-index: 999;
-      will-change: transform, opacity;
-      animation: dropAndFade 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+      top: 0;
+      left: 0;
+      width: 350px;
+      height: 350px;
+      border-radius: 50%;
+      background: radial-gradient(
+        circle,
+        rgba(255, 255, 255, 0.15) 0%,
+        rgba(138, 43, 226, 0.08) 40%,
+        rgba(0, 0, 0, 0) 70%
+      );
+      pointer-events: none; /* 讓鼠標光暈不擋住按鈕點擊 */
+      transform: translate(-50%, -50%);
+      transition: transform 0.05s ease-out, opacity 0.3s ease;
+      z-index: 9999;
+      mix-blend-mode: screen;
     }
 
-    @keyframes dropAndFade {
-      0% {
-        opacity: 1;
-        transform: translate(0, 0) rotate(0deg) scale(1);
-      }
-      20% {
-        opacity: 1;
-        transform: translate(var(--offset-x), -15px) rotate(calc(var(--rot) * 0.3)) scale(1.1);
-      }
-      100% {
-        opacity: 0;
-        transform: translate(calc(var(--offset-x) * 1.8), 120px) rotate(var(--rot)) scale(0.85);
-      }
-    }
-
-    /* 置中主容器 (固定高寬，防跑位) */
-    .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      width: 100%;
-      height: 100%;
-      max-width: 1000px;
-      z-index: 1;
-      position: relative;
-    }
-
-    /* 中央區域：利用 Grid 重疊兩頁內容，支援流暢淡入淡出 */
-    .content-stage {
-      display: grid;
-      place-items: center;
-      width: 100%;
-      margin: auto 0;
-    }
-
-    .hero-content, .links-menu {
-      grid-area: 1 / 1;
-    }
-
-    /* ===== 首頁居中主要內容 ===== */
-    .hero-content {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      opacity: 1;
-      transform: scale(1);
-      transition: opacity 0.5s ease, transform 0.5s ease;
-      pointer-events: auto;
-    }
-
-    .hero-content.fade-out {
-      opacity: 0;
-      transform: scale(0.92) translateY(-20px);
-      pointer-events: none;
-    }
-
-    /* 首頁打字標題 */
-    .typewriter-wrapper {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-bottom: 65px;
-      max-width: 100%;
-    }
-
-    .typewriter {
-      font-family: 'Press Start 2P', monospace, sans-serif;
-      font-size: 6.1rem;
-      text-transform: lowercase;
-      color: var(--text-color);
-      white-space: nowrap;
-      overflow: hidden;
-      border-right: 6px solid var(--text-color);
-      width: 0;
-      animation: 
-        typing 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) forwards,
-        blink-caret 0.6s step-end infinite;
-    }
-
-    @keyframes typing {
-      from { width: 0; }
-      to { width: 385px; }
-    }
-
-    @keyframes blink-caret {
-      from, to { border-color: transparent; }
-      50% { border-color: var(--text-color); }
-    }
-
-    /* 首頁中間按鈕 */
-    .btn-jnii {
-      display: inline-block;
-      padding: 18px 46px;
-      font-size: 1.43rem;
-      font-weight: 600;
-      color: var(--text-color);
-      text-decoration: none;
-      border: 3px solid var(--border-color);
-      border-radius: 9px;
-      background-color: var(--bg-color);
-      letter-spacing: 1.6px;
-      cursor: pointer;
-      transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
-      
-      opacity: 0;
-      transform: scale(0.92);
-      animation: fadeInBtn 0.4s ease-out 0.7s forwards;
-    }
-
-    .btn-jnii:hover {
-      background-color: var(--hover-bg);
-      color: var(--hover-text);
-      box-shadow: 0 0 22px var(--box-shadow-color);
-      transform: scale(1.03);
-    }
-
-    @keyframes fadeInBtn {
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
-
-    /* ===== 第二頁選單區域 ===== */
-    .links-menu {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 22px;
-      width: 100%;
-      max-width: 480px;
-      pointer-events: none;
-    }
-
-    /* 統一由外層 Wrapper 控制所有淡入滑動動畫，徹底消除抖動 */
-    .white-box-wrapper {
-      width: 100%;
-      position: relative;
-      opacity: 0;
-      transform: translateY(40px) scale(0.95);
-      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), 
-                  transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-      will-change: transform, opacity;
-    }
-
-    .links-menu.active {
-      pointer-events: auto;
-    }
-
-    .links-menu.active .white-box-wrapper {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-
-    .links-menu.active .white-box-wrapper:nth-child(1) { transition-delay: 0.1s; }
-    .links-menu.active .white-box-wrapper:nth-child(2) { transition-delay: 0.2s; }
-    .links-menu.active .white-box-wrapper:nth-child(3) { transition-delay: 0.3s; }
-    .links-menu.active .white-box-wrapper:nth-child(4) { transition-delay: 0.4s; }
-
-    .white-box {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-      height: 65px;
-      border: 3.5px solid var(--border-color);
-      border-radius: 9px;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      text-decoration: none;
-      font-size: 1.4rem;
-      font-weight: 700;
-      letter-spacing: 2px;
-      cursor: pointer;
-      /* 僅對 hover 顏色進行平滑過渡，不干擾進場 transform */
-      transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
-      line-height: 1;
-    }
-
-    .white-box:hover {
-      background-color: var(--hover-bg);
-      color: var(--hover-text);
-      box-shadow: 0 0 25px var(--box-shadow-color);
-    }
-
-    /* ===== YouTube 懸停 / 點擊展開選單 ===== */
-    .yt-sub-container {
-      display: flex;
-      gap: 15px;
+    /* ----- 頁面切換與淡入淡出效果 ----- */
+    .page {
       position: absolute;
-      top: 100%;
+      top: 0;
       left: 0;
       width: 100%;
-      padding-top: 10px;
+      min-height: 100vh;
       opacity: 0;
-      pointer-events: none;
-      transform: translateY(-5px);
-      transition: opacity 0.25s ease, transform 0.25s ease;
-      z-index: 20;
-    }
-
-    @media (hover: hover) {
-      .white-box-wrapper.yt-wrapper:hover .yt-sub-container {
-        opacity: 1;
-        pointer-events: auto;
-        transform: translateY(0);
-      }
-    }
-
-    .white-box-wrapper.yt-wrapper.open .yt-sub-container {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translateY(0);
-    }
-
-    .yt-btn {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 50px;
-      border: 3px solid var(--border-color);
-      border-radius: 8px;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      text-decoration: none;
-      font-size: 1.1rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-      transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
-      line-height: 1;
-    }
-
-    .yt-btn:hover {
-      background-color: var(--hover-bg);
-      color: var(--hover-text);
-      box-shadow: 0 0 18px var(--box-shadow-color);
-    }
-
-    /* ===== 底部 Business Inquiries ===== */
-    .inquiry-wrapper {
-      position: relative;
+      visibility: hidden;
+      transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.6s;
+      padding: 2rem;
       display: flex;
       flex-direction: column;
+      justify-content: center;
       align-items: center;
-      width: 100%;
-      padding-bottom: 25px;
     }
 
-    .inquiry-text {
-      font-size: 1.1rem;
-      font-weight: 500;
-      letter-spacing: 0.9px;
-      white-space: nowrap;
-      cursor: pointer;
-      transition: opacity 0.5s ease, transform 0.5s ease;
-      
-      background: linear-gradient(90deg, var(--inquiry-base) 0%, var(--inquiry-base) 40%, var(--inquiry-shine) 50%, var(--inquiry-base) 60%, var(--inquiry-base) 100%);
-      background-size: 200% 100%;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: shimmer 3s infinite linear;
-
-      opacity: 0;
-      max-width: 100%;
-    }
-
-    .inquiry-text.init-fadeIn {
-      animation: fadeInText 0.6s ease-out 1.1s forwards, shimmer 3s infinite linear;
-    }
-
-    @keyframes shimmer {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-
-    @keyframes fadeInText {
-      to { opacity: 1; }
-    }
-
-    .copied-toast {
-      position: absolute;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--toast-color);
-      letter-spacing: 1px;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease, transform 0.3s ease;
-    }
-
-    .copied-toast.pos-bottom {
-      bottom: 55px;
-      transform: translateY(5px);
-    }
-
-    .copied-toast.show {
+    .page.active {
       opacity: 1;
-      transform: translateY(0);
+      visibility: visible;
     }
 
-    .inquiry-hidden {
-      opacity: 0 !important;
-      transform: translateY(15px) !important;
+    /* ----- 首頁 (Page 1) ----- */
+    #home-page h1 {
+      font-size: 3rem;
+      margin-bottom: 1.5rem;
+      letter-spacing: 2px;
     }
 
-    .inquiry-visible {
-      opacity: 1 !important;
-      transform: translateY(0) !important;
+    .nav-btn {
+      padding: 12px 30px;
+      font-size: 1rem;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 30px;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
     }
 
-    /* ==========================================
-       📱 手機端 / Instagram 內建瀏覽器專用優化
-    ========================================== */
-    @media (max-width: 768px) {
-      .theme-toggle-btn {
-        top: 15px;
-        left: 15px;
-        padding: 4px 0;
-        min-width: 60px;
-        font-size: 0.65rem;
-      }
-
-      .top-right-wrapper {
-        top: 15px;
-        right: 15px;
-      }
-
-      .top-right-logo {
-        font-size: 1.2rem;
-      }
-
-      .falling-kaomoji {
-        font-size: 0.9rem;
-      }
-
-      .typewriter-wrapper {
-        margin-bottom: 25px;
-      }
-
-      .typewriter {
-        font-size: 2.1rem;
-        border-right-width: 3px;
-      }
-
-      @keyframes typing {
-        from { width: 0; }
-        to { width: 135px; }
-      }
-
-      .btn-jnii {
-        padding: 8px 20px;
-        font-size: 0.82rem;
-        border-width: 2px;
-      }
-
-      .links-menu {
-        gap: 12px;
-        max-width: 260px;
-      }
-
-      .white-box {
-        height: 38px;
-        font-size: 0.82rem;
-        border-width: 2px;
-      }
-
-      .yt-sub-container {
-        gap: 8px;
-        padding-top: 5px;
-      }
-
-      .yt-btn {
-        height: 32px;
-        font-size: 0.72rem;
-        border-width: 2px;
-      }
-
-      /* 手機端底部文字向上移動避開導覽列 */
-      .inquiry-wrapper {
-        padding-bottom: 45px;
-      }
-
-      .inquiry-text {
-        font-size: 0.65rem;
-        letter-spacing: 0.3px;
-        white-space: nowrap;
-      }
-
-      .copied-toast {
-        font-size: 0.65rem;
-      }
-
-      .copied-toast.pos-bottom {
-        bottom: 70px;
-      }
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.5);
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
     }
 
-    @media (max-width: 380px) {
-      .typewriter {
-        font-size: 1.8rem;
-      }
+    /* ----- 第二頁 (Page 2) ----- */
+    #second-page {
+      background-color: #080808;
+    }
 
-      @keyframes typing {
-        from { width: 0; }
-        to { width: 115px; }
-      }
+    /* ----- 2. 第二頁左下角返回首頁按鈕 ----- */
+    .back-home-btn {
+      position: fixed;
+      bottom: 30px;
+      left: 30px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.7);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 20px;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      transition: all 0.3s ease;
+    }
 
-      .links-menu {
-        max-width: 230px;
-      }
+    .back-home-btn:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.4);
+      transform: translateX(-3px);
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.1);
+    }
 
-      .inquiry-text {
-        font-size: 0.58rem;
-      }
+    .back-home-btn svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+      transition: transform 0.3s ease;
+    }
+
+    .back-home-btn:hover svg {
+      transform: translateX(-3px);
     }
   </style>
 </head>
 <body>
 
-  <!-- 左上角切換暗底/亮底按鈕 -->
-  <button class="theme-toggle-btn" id="themeToggleBtn">Dark</button>
+  <!-- 發光鼠標層 -->
+  <div class="cursor-glow" id="cursor-glow"></div>
 
-  <!-- 右上角固定標題 jnis -->
-  <div class="top-right-wrapper">
-    <div class="top-right-logo" id="topLogo">jnis</div>
-  </div>
+  <!-- 首頁 -->
+  <section id="home-page" class="page active">
+    <h1>jnis</h1>
+    <button class="nav-btn" onclick="navigateTo('second-page')">進入第二頁 →</button>
+  </section>
 
-  <div class="container" id="mainContainer">
-    
-    <!-- 舞台區域：重疊首頁與選單頁以進行平滑轉場 -->
-    <div class="content-stage">
-      <!-- 首頁內容 -->
-      <div class="hero-content" id="heroContent">
-        <div class="typewriter-wrapper" id="homeTitle">
-          <h1 class="typewriter">jnis</h1>
-        </div>
-        <a href="javascript:void(0);" class="btn-jnii" id="btnJnii">@jnii2008</a>
-      </div>
+  <!-- 第二頁 -->
+  <section id="second-page" class="page">
+    <h2>第二頁內容</h2>
+    <p style="margin-top: 1rem; color: #888;">這裡可以放置你的專案或介紹內容。</p>
 
-      <!-- 第二頁選單 -->
-      <div class="links-menu" id="linksMenu">
-        <!-- Discord -->
-        <div class="white-box-wrapper">
-          <a href="https://discord.gg/3TJWX3HFCs" target="_blank" class="white-box">Discord</a>
-        </div>
-
-        <!-- Twitch -->
-        <div class="white-box-wrapper">
-          <a href="https://www.twitch.tv/jnii2008" target="_blank" class="white-box">Twitch</a>
-        </div>
-
-        <!-- Instagram -->
-        <div class="white-box-wrapper">
-          <a href="https://www.instagram.com/jnii2008/" target="_blank" class="white-box">Instagram</a>
-        </div>
-
-        <!-- YouTube -->
-        <div class="white-box-wrapper yt-wrapper" id="ytWrapper">
-          <div class="white-box" id="ytTrigger">YouTube</div>
-          <div class="yt-sub-container">
-            <a href="https://www.youtube.com/@jnii2008" target="_blank" class="yt-btn">Main</a>
-            <a href="https://www.youtube.com/@%E5%82%91%E5%B0%BC4" target="_blank" class="yt-btn">VOD</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 底部聯絡資訊與複製提示 -->
-    <div class="inquiry-wrapper">
-      <div class="copied-toast pos-bottom" id="copiedToast">Copied!</div>
-      <p class="inquiry-text init-fadeIn" id="inquiryText">
-        Business Inquiries: jnis550088@gmail.com
-      </p>
-    </div>
-  </div>
+    <!-- 左下角返回首頁按鈕 -->
+    <button class="back-home-btn" onclick="navigateTo('home-page')">
+      <svg viewBox="0 0 24 24">
+        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+      </svg>
+      返回首頁
+    </button>
+  </section>
 
   <script>
-    const btnJnii = document.getElementById('btnJnii');
-    const heroContent = document.getElementById('heroContent');
-    const linksMenu = document.getElementById('linksMenu');
-    const topLogo = document.getElementById('topLogo');
-    const inquiryText = document.getElementById('inquiryText');
-    const copiedToast = document.getElementById('copiedToast');
-    const themeToggleBtn = document.getElementById('themeToggleBtn');
-    const ytWrapper = document.getElementById('ytWrapper');
-    const ytTrigger = document.getElementById('ytTrigger');
+    // ===== 1. 鼠標跟隨發光邏輯 =====
+    const glow = document.getElementById('cursor-glow');
 
-    let toastTimeout;
-
-    // 表情符號隨機列表
-    const kaomojis = ['><', '(ﾉ∀`*)', '(≧∀≦)ゞ', 'ヾ(*´∀ ˋ*)ﾉ', '(*ﾟ∀ﾟ*)', '(;´༎ຶД༎ຶ`)', '( °3°)', '(つ´ω`)つ'];
-    let kaomojiIndex = 0;
-
-    // 頁面切換 logic (流暢淡入淡出)
-    btnJnii.addEventListener('click', function() {
-      heroContent.classList.add('fade-out');
-      inquiryText.classList.remove('init-fadeIn');
-      inquiryText.classList.add('inquiry-hidden');
-
-      setTimeout(() => {
-        linksMenu.classList.add('active');
-        topLogo.classList.add('visible');
-
-        requestAnimationFrame(() => {
-          inquiryText.classList.remove('inquiry-hidden');
-          inquiryText.classList.add('inquiry-visible');
-        });
-      }, 350);
+    document.addEventListener('mousemove', (e) => {
+      // 取得滑鼠座標並更新發光層位置
+      glow.style.left = `${e.clientX}px`;
+      glow.style.top = `${e.clientY}px`;
     });
 
-    // 右上角 jnis 點擊爆發拋物掉落表情符號 (按越多噴越多)
-    topLogo.addEventListener('click', function(e) {
-      e.stopPropagation();
+    // 當滑鼠離開視窗時隱藏光暈，進入時顯示
+    document.addEventListener('mouseleave', () => glow.style.opacity = '0');
+    document.addEventListener('mouseenter', () => glow.style.opacity = '1');
 
-      const rect = topLogo.getBoundingClientRect();
-      const kaomojiEl = document.createElement('div');
-      kaomojiEl.className = 'falling-kaomoji';
-      kaomojiEl.textContent = kaomojis[kaomojiIndex];
+    // ===== 2. 頁面平滑淡入淡出切換 =====
+    function navigateTo(targetPageId) {
+      const activePage = document.querySelector('.page.active');
+      const targetPage = document.getElementById(targetPageId);
 
-      // 依序輪播表情
-      kaomojiIndex = (kaomojiIndex + 1) % kaomojis.length;
+      if (activePage && activePage.id !== targetPageId) {
+        // 先淡出目前頁面
+        activePage.classList.remove('active');
 
-      // 起始位置 (計算在 Logo 的中心下方)
-      const startX = rect.left + rect.width / 2 - 20;
-      const startY = rect.bottom + 5;
-
-      // 產生隨機物理變數 (左右偏移量與旋轉角度)
-      const randomOffsetX = (Math.random() - 0.5) * 80 + 'px';
-      const randomRotation = (Math.random() - 0.5) * 60 + 'deg';
-
-      kaomojiEl.style.left = startX + 'px';
-      kaomojiEl.style.top = startY + 'px';
-      kaomojiEl.style.setProperty('--offset-x', randomOffsetX);
-      kaomojiEl.style.setProperty('--rot', randomRotation);
-
-      document.body.appendChild(kaomojiEl);
-
-      // 動畫結束後自動刪除元素，防止佔用記憶體
-      kaomojiEl.addEventListener('animationend', () => {
-        kaomojiEl.remove();
-      });
-    });
-
-    // YouTube 點擊展開/收合
-    ytTrigger.addEventListener('click', function(e) {
-      e.stopPropagation();
-      ytWrapper.classList.toggle('open');
-    });
-
-    // 點擊頁面其他地方自動收合 YouTube 選單
-    document.addEventListener('click', function(e) {
-      if (!ytWrapper.contains(e.target)) {
-        ytWrapper.classList.remove('open');
+        // 待淡出動畫完畢後，淡入目標頁面
+        setTimeout(() => {
+          targetPage.classList.add('active');
+          window.scrollTo(0, 0); // 切換頁面時自動回到頂部
+        }, 300);
       }
-    });
-
-    // 點擊複製 Email 功能
-    inquiryText.addEventListener('click', function() {
-      const email = 'jnis550088@gmail.com';
-      navigator.clipboard.writeText(email).then(() => {
-        copiedToast.classList.add('show');
-
-        clearTimeout(toastTimeout);
-        toastTimeout = setTimeout(() => {
-          copiedToast.classList.remove('show');
-        }, 2000);
-      });
-    });
-
-    // 主題切換
-    themeToggleBtn.addEventListener('click', function() {
-      document.body.classList.toggle('light-theme');
-      if (document.body.classList.contains('light-theme')) {
-        themeToggleBtn.textContent = 'Light';
-      } else {
-        themeToggleBtn.textContent = 'Dark';
-      }
-    });
+    }
   </script>
-
 </body>
 </html>
