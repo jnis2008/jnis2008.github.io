@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -353,16 +353,13 @@
       color: var(--text-color);
       cursor: pointer;
       padding: 6px 14px;
-      border: 2px dashed var(--border-color);
-      border-radius: 8px;
+      border: none;
       background: transparent;
-      transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+      transition: color 0.3s ease, text-shadow 0.3s ease, transform 0.2s ease;
     }
 
     .timezone-clock:hover {
-      background-color: var(--hover-bg);
-      color: var(--hover-text);
-      box-shadow: 0 0 15px var(--box-shadow-color);
+      text-shadow: 0 0 15px var(--box-shadow-color);
       transform: scale(1.05);
     }
 
@@ -685,7 +682,7 @@
         
         <!-- 時區時鐘 (點擊可切換時區) -->
         <div class="time-display-wrapper">
-          <button class="timezone-clock" id="timezoneClock" title="點擊切換國家時區">00:00</button>
+          <button class="timezone-clock" id="timezoneClock" title="Click to change timezone">00:00</button>
         </div>
 
         <!-- Discord -->
@@ -743,13 +740,13 @@
 
     // ===== 時區切換設定 =====
     const timezones = [
-      { name: '台灣 (TPE)', zone: 'Asia/Taipei' },
-      { name: '美西 (LAX)', zone: 'America/Los_Angeles' },
-      { name: '美東 (NYC)', zone: 'America/New_York' },
-      { name: '日本 (TYO)', zone: 'Asia/Tokyo' },
-      { name: '英國 (LON)', zone: 'Europe/London' },
-      { name: '法國 (PAR)', zone: 'Europe/Paris' },
-      { name: '南韓 (SEL)', zone: 'Asia/Seoul' }
+      { name: 'TPE', zone: 'Asia/Taipei' },
+      { name: 'LAX', zone: 'America/Los_Angeles' },
+      { name: 'NYC', zone: 'America/New_York' },
+      { name: 'TYO', zone: 'Asia/Tokyo' },
+      { name: 'LON', zone: 'Europe/London' },
+      { name: 'PAR', zone: 'Europe/Paris' },
+      { name: 'SEL', zone: 'Asia/Seoul' }
     ];
     let currentTimezoneIndex = 0;
 
@@ -765,7 +762,6 @@
         };
         const formatter = new Intl.DateTimeFormat('en-GB', options);
         let timeString = formatter.format(now);
-        // 確保格式為 00:00
         if (timeString === '24:00') timeString = '00:00';
         timezoneClock.textContent = `${timeString} [${currentTz.name}]`;
       } catch (e) {
