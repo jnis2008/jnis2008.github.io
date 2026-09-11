@@ -41,6 +41,12 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      /* 全局禁止文字反白/選取 */
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
     }
 
     body {
@@ -91,7 +97,7 @@
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      z-index: 10;
+      z-index: 100;
     }
 
     .top-right-logo {
@@ -103,7 +109,6 @@
       transform: translateY(-20px);
       transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), text-shadow 0.3s ease;
       cursor: pointer;
-      user-select: none;
     }
 
     .top-right-logo.visible {
@@ -118,15 +123,16 @@
 
     /* 右上角點擊出現的文字表情 */
     .kaomoji-popup {
-      font-size: 0.95rem;
-      font-weight: 600;
+      font-size: 1rem;
+      font-weight: 700;
       color: var(--text-color);
-      margin-top: 10px;
+      margin-top: 12px;
       opacity: 0;
       transform: translateY(-8px);
       transition: opacity 0.3s ease, transform 0.3s ease;
       pointer-events: none;
       white-space: nowrap;
+      height: 20px;
     }
 
     .kaomoji-popup.show {
@@ -294,7 +300,6 @@
       letter-spacing: 2px;
       cursor: pointer;
       transition: all 0.3s ease;
-      user-select: none;
     }
 
     .white-box:hover {
@@ -372,7 +377,6 @@
       letter-spacing: 0.9px;
       white-space: nowrap;
       cursor: pointer;
-      user-select: none;
       transition: opacity 0.5s ease, transform 0.5s ease;
       
       background: linear-gradient(90deg, var(--inquiry-base) 0%, var(--inquiry-base) 40%, var(--inquiry-shine) 50%, var(--inquiry-base) 60%, var(--inquiry-base) 100%);
@@ -451,7 +455,7 @@
       }
 
       .kaomoji-popup {
-        font-size: 0.75rem;
+        font-size: 0.8rem;
         margin-top: 5px;
       }
 
@@ -627,7 +631,8 @@
     });
 
     // 右上角 jnis 點擊循環表情符號
-    topLogo.addEventListener('click', function() {
+    topLogo.addEventListener('click', function(e) {
+      e.stopPropagation();
       kaomojiPopup.textContent = kaomojis[kaomojiIndex];
       kaomojiPopup.classList.add('show');
 
