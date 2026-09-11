@@ -51,12 +51,13 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      overflow: hidden;
+      overflow-x: hidden;
       position: relative;
       transition: background-color 0.4s ease, color 0.4s ease;
+      padding: 0 20px;
     }
 
-    /* ===== 1. 左上角切換主題按鈕 (固定寬度不晃動，純文字) ===== */
+    /* ===== 左上角切換主題按鈕 ===== */
     .theme-toggle-btn {
       position: absolute;
       top: 40px;
@@ -81,7 +82,7 @@
       box-shadow: 0 0 15px var(--box-shadow-color);
     }
 
-    /* ===== 2. 右上角固定標題 jnis (亮色時改黑光) ===== */
+    /* ===== 右上角固定標題 jnis ===== */
     .top-right-logo {
       position: absolute;
       top: 40px;
@@ -127,6 +128,7 @@
       align-items: center;
       margin-bottom: 65px;
       transition: opacity 0.4s ease, transform 0.4s ease;
+      max-width: 100%;
     }
 
     .typewriter {
@@ -245,7 +247,7 @@
       box-shadow: 0 0 25px var(--box-shadow-color);
     }
 
-    /* ===== 4. YouTube 懸停浮動選單 (修動連貫懸停區域) ===== */
+    /* ===== YouTube 懸停浮動選單 ===== */
     .yt-sub-container {
       display: flex;
       gap: 15px;
@@ -253,7 +255,7 @@
       top: 100%;
       left: 0;
       width: 100%;
-      padding-top: 10px; /* 透明接縫橋樑，確保游標滑下不會遺失 Focus */
+      padding-top: 10px;
       opacity: 0;
       pointer-events: none;
       transform: translateY(-5px);
@@ -261,7 +263,8 @@
       z-index: 20;
     }
 
-    .white-box-wrapper.yt-wrapper:hover .yt-sub-container {
+    .white-box-wrapper.yt-wrapper:hover .yt-sub-container,
+    .white-box-wrapper.yt-wrapper:focus-within .yt-sub-container {
       opacity: 1;
       pointer-events: auto;
       transform: translateY(0);
@@ -290,12 +293,13 @@
       box-shadow: 0 0 18px var(--box-shadow-color);
     }
 
-    /* ===== 3. 底部 Business Inquiries (亮色改黑光) ===== */
+    /* ===== 底部 Business Inquiries ===== */
     .inquiry-wrapper {
       position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
+      width: 100%;
     }
 
     .inquiry-text {
@@ -314,6 +318,7 @@
       animation: shimmer 3s infinite linear;
 
       opacity: 0;
+      max-width: 100%;
     }
 
     .inquiry-text.init-fadeIn {
@@ -341,13 +346,11 @@
       transition: opacity 0.3s ease, transform 0.3s ease;
     }
 
-    /* 首頁 Copied 顯示在下方 */
     .copied-toast.pos-bottom {
       top: 30px;
       transform: translateY(-5px);
     }
 
-    /* 第二頁 Copied 顯示在上方 */
     .copied-toast.pos-top {
       bottom: 30px;
       transform: translateY(5px);
@@ -358,7 +361,6 @@
       transform: translateY(0);
     }
 
-    /* 動畫輔助類別 */
     .fade-out {
       opacity: 0 !important;
       transform: translateY(-25px) !important;
@@ -374,14 +376,102 @@
       opacity: 1 !important;
       transform: translateY(0) !important;
     }
+
+    /* ==========================================
+       📱 手機與行動裝置響應式 RWD 調整
+    ========================================== */
+    @media (max-width: 768px) {
+      .theme-toggle-btn {
+        top: 25px;
+        left: 20px;
+        padding: 6px 0;
+        min-width: 70px;
+        font-size: 0.75rem;
+      }
+
+      .top-right-logo {
+        top: 25px;
+        right: 20px;
+        font-size: 1.6rem;
+      }
+
+      .typewriter-wrapper {
+        margin-bottom: 45px;
+      }
+
+      .typewriter {
+        font-size: 3.5rem;
+        border-right-width: 4px;
+      }
+
+      @keyframes typing {
+        from { width: 0; }
+        to { width: 220px; }
+      }
+
+      .btn-jnii {
+        padding: 14px 32px;
+        font-size: 1.1rem;
+        margin-bottom: 70px;
+      }
+
+      .links-menu {
+        gap: 24px;
+        margin-bottom: 70px;
+      }
+
+      .white-box {
+        height: 62px;
+        font-size: 1.25rem;
+      }
+
+      .yt-btn {
+        height: 48px;
+        font-size: 1rem;
+      }
+
+      .inquiry-text {
+        font-size: 0.82rem;
+        white-space: normal;
+        word-break: break-all;
+        text-align: center;
+        padding: 0 10px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .typewriter {
+        font-size: 2.8rem;
+      }
+
+      @keyframes typing {
+        from { width: 0; }
+        to { width: 178px; }
+      }
+
+      .btn-jnii {
+        padding: 12px 26px;
+        font-size: 1rem;
+      }
+
+      .white-box {
+        height: 56px;
+        font-size: 1.1rem;
+      }
+
+      .yt-btn {
+        height: 44px;
+        font-size: 0.9rem;
+      }
+    }
   </style>
 </head>
 <body>
 
-  <!-- 1. 左上角切換暗底/亮底按鈕 (純文字，寬度固定) -->
+  <!-- 左上角切換暗底/亮底按鈕 -->
   <button class="theme-toggle-btn" id="themeToggleBtn">Dark</button>
 
-  <!-- 右上角固定出現的 jnis -->
+  <!-- 右上角固定標題 jnis -->
   <div class="top-right-logo" id="topLogo">jnis</div>
 
   <div class="container">
@@ -403,8 +493,8 @@
         <a href="https://www.instagram.com/jnii2008/" target="_blank" class="white-box">Instagram</a>
       </div>
 
-      <!-- YouTube (懸停流暢顯示獨立按鈕) -->
-      <div class="white-box-wrapper yt-wrapper">
+      <!-- YouTube -->
+      <div class="white-box-wrapper yt-wrapper" tabindex="0">
         <div class="white-box">YouTube</div>
         <div class="yt-sub-container">
           <a href="https://www.youtube.com/@jnii2008" target="_blank" class="yt-btn">Main</a>
@@ -460,7 +550,6 @@
     inquiryText.addEventListener('click', function() {
       const email = 'jnis550088@gmail.com';
       navigator.clipboard.writeText(email).then(() => {
-        // 設定提示字位置 (第二頁在上方, 首頁在下方)
         if (isSecondPage) {
           copiedToast.classList.remove('pos-bottom');
           copiedToast.classList.add('pos-top');
@@ -469,7 +558,6 @@
           copiedToast.classList.add('pos-bottom');
         }
 
-        // 顯示 Copied!
         copiedToast.classList.add('show');
 
         clearTimeout(toastTimeout);
@@ -479,7 +567,7 @@
       });
     });
 
-    // 亮底/暗底主題切換
+    // 主題切換
     themeToggleBtn.addEventListener('click', function() {
       document.body.classList.toggle('light-theme');
       if (document.body.classList.contains('light-theme')) {
