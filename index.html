@@ -652,7 +652,7 @@
   <!-- 左下角返回首頁按鈕 -->
   <button class="back-home-btn" id="backHomeBtn">Home</button>
 
-  <!--右上角固定標題 jnis -->
+  <!-- 右上角固定標題 jnis -->
   <div class="top-right-wrapper">
     <div class="top-right-logo" id="topLogo">jnis</div>
   </div>
@@ -672,7 +672,7 @@
       <!-- 第二頁選單 -->
       <div class="links-menu" id="linksMenu">
         
-        <!-- 像素風車與乳牛動態 Canvas -->
+        <!-- 像素風車、貓貓與狗狗動態 Canvas -->
         <div class="pixel-canvas-wrapper">
           <canvas id="pixelCanvas" width="480" height="70"></canvas>
         </div>
@@ -826,7 +826,7 @@
     });
 
     // ========================================================
-    // ===== 像素 Canvas (地平線、風車、乳牛慢速移動與轉向) =====
+    // ===== 像素 Canvas (地平線、高風車、精緻貓狗) =====
     // ========================================================
     const canvas = document.getElementById('pixelCanvas');
     const ctx = canvas.getContext('2d');
@@ -853,20 +853,36 @@
       [0,0,1,1,0,0]
     ];
 
-    // 乳牛像素定義 (依照你提供的圖片造型設計，面向右邊)
-    const cowRight1 = [
-      [0,0,0,1,1,0,0,0,0,0,0,0,0,0,0],
-      [0,0,1,1,1,1,1,1,1,1,1,1,1,0,0],
-      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-      [0,0,1,1,1,1,1,1,1,1,1,1,1,1,0],
-      [0,0,1,0,1,0,0,1,0,0,1,0,0,1,0]
+    // 精緻貓貓像素定義 (面向右邊)
+    const catRight1 = [
+      [0,0,1,0,0,1,0],
+      [0,1,1,1,1,1,0],
+      [1,1,1,1,1,1,1],
+      [0,1,1,1,1,1,0],
+      [0,0,1,0,1,0,0]
     ];
-    const cowRight2 = [
-      [0,0,0,1,1,0,0,0,0,0,0,0,0,0,0],
-      [0,0,1,1,1,1,1,1,1,1,1,1,1,0,0],
-      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-      [0,0,1,1,1,1,1,1,1,1,1,1,1,1,0],
-      [0,0,0,1,0,1,0,0,1,0,0,1,0,1,0]
+    const catRight2 = [
+      [0,0,1,0,0,1,0],
+      [0,1,1,1,1,1,0],
+      [1,1,1,1,1,1,1],
+      [0,1,1,1,1,1,0],
+      [0,0,0,1,0,1,0]
+    ];
+
+    // 精緻狗狗像素定義 (面向右邊)
+    const dogRight1 = [
+      [1,1,0,0,0,0,0],
+      [1,1,1,1,1,1,0],
+      [1,1,1,1,1,1,1],
+      [0,1,1,1,1,1,0],
+      [0,1,0,0,1,0,0]
+    ];
+    const dogRight2 = [
+      [1,1,0,0,0,0,0],
+      [1,1,1,1,1,1,0],
+      [1,1,1,1,1,1,1],
+      [0,1,1,1,1,1,0],
+      [0,0,1,0,0,1,0]
     ];
 
     // 繪製矩陣函式（支援 dir === -1 時自動水平鏡像翻轉）
@@ -885,20 +901,21 @@
       }
     }
 
-    // 繪製風車主體與旋轉扇葉
-    function drawWindmill(baseX, groundY, pixelSize, color, time) {
-      // 風車塔身 (梯形)
-      ctx.fillStyle = color;
+    // 繪製加高且帶尖頂的歐式風車與旋轉扇葉
+    function drawTallWindmill(baseX, groundY, pixelSize, color, time) {
+      // 1. 高塔身 (梯形)
       const towerRows = [
         [0,0,1,1,0,0],
         [0,1,1,1,1,0],
         [0,1,1,1,1,0],
         [1,1,1,1,1,1],
+        [1,1,1,1,1,1],
         [1,1,1,1,1,1]
       ];
       const towerH = towerRows.length * pixelSize;
       const towerY = groundY - towerH;
-      
+
+      ctx.fillStyle = color;
       for (let r = 0; r < towerRows.length; r++) {
         for (let c = 0; c < towerRows[r].length; c++) {
           if (towerRows[r][c] === 1) {
@@ -907,22 +924,37 @@
         }
       }
 
-      // 風車旋轉扇葉中心點
+      // 2. 尖屋頂 (三角形帽)
+      const roofRows = [
+        [0,0,1,1,0,0],
+        [0,1,1,1,1,0],
+        [1,1,1,1,1,1]
+      ];
+      const roofH = roofRows.length * pixelSize;
+      const roofY = towerY - roofH;
+
+      for (let r = 0; r < roofRows.length; r++) {
+        for (let c = 0; c < roofRows[r].length; c++) {
+          if (roofRows[r][c] === 1) {
+            ctx.fillRect(baseX + (c - 0) * pixelSize, roofY + r * pixelSize, pixelSize, pixelSize);
+          }
+        }
+      }
+
+      // 3. 風車旋轉扇葉中心點
       const centerX = baseX + (towerRows[0].length * pixelSize) / 2;
-      const centerY = towerY + pixelSize * 1.5;
-      const bladeLength = pixelSize * 6;
+      const centerY = towerY + pixelSize * 2;
+      const bladeLength = pixelSize * 7;
 
       ctx.save();
       ctx.translate(centerX, centerY);
-      // 讓扇葉隨時間旋轉
-      ctx.rotate(time * 0.02);
+      ctx.rotate(time * 0.02); // 旋轉速度
 
       // 畫四片扇葉
       ctx.fillStyle = color;
       for (let i = 0; i < 4; i++) {
         ctx.rotate(Math.PI / 2);
         ctx.fillRect(-pixelSize / 2, -bladeLength, pixelSize, bladeLength);
-        // 扇葉網格細節
         ctx.fillRect(pixelSize, -bladeLength + pixelSize * 2, pixelSize * 2, pixelSize * 3);
       }
       ctx.restore();
@@ -930,17 +962,17 @@
 
     // 樹木位置
     const treePositions = [
-      { type: treeLarge, x: 40 },
-      { type: treeSmall, x: 140 }
+      { type: treeLarge, x: 35 },
+      { type: treeSmall, x: 120 }
     ];
 
     // 風車位置
-    const windmillX = 380;
+    const windmillX = 390;
 
-    // 動物角色類別 (乳牛)
+    // 動物角色類別 (貓貓與狗狗)
     class PixelAnimal {
       constructor(type, startX, speed) {
-        this.type = type;
+        this.type = type; // 'cat' 或 'dog'
         this.x = startX;
         this.speed = speed;
         this.dir = Math.random() < 0.5 ? 1 : -1;
@@ -970,8 +1002,8 @@
           if (this.x < 25) {
             this.x = 25;
             this.dir = 1;
-          } else if (this.x > 410) {
-            this.x = 410;
+          } else if (this.x > 360) {
+            this.x = 360;
             this.dir = -1;
           }
         } else {
@@ -980,7 +1012,13 @@
       }
 
       draw(groundY, pixelSize, color) {
-        const matrix = (this.currentFrame === 0) ? cowRight1 : cowRight2;
+        let matrix;
+        if (this.type === 'cat') {
+          matrix = (this.currentFrame === 0) ? catRight1 : catRight2;
+        } else {
+          matrix = (this.currentFrame === 0) ? dogRight1 : dogRight2;
+        }
+
         const animalHeight = matrix.length * pixelSize;
         const drawY = groundY - animalHeight;
         
@@ -989,7 +1027,8 @@
     }
 
     const animals = [
-      new PixelAnimal('cow', 220, 0.25)
+      new PixelAnimal('cat', 190, 0.28),
+      new PixelAnimal('dog', 290, 0.32)
     ];
 
     let animTime = 0;
@@ -1012,10 +1051,10 @@
         drawPixelMatrix(tree.type, tree.x, groundY - treeH, pixelSize, 1, pixelColor);
       });
 
-      // 3. 風車
-      drawWindmill(windmillX, groundY, pixelSize, pixelColor, animTime);
+      // 3. 高風車
+      drawTallWindmill(windmillX, groundY, pixelSize, pixelColor, animTime);
 
-      // 4. 乳牛
+      // 4. 精緻貓狗
       animals.forEach(animal => {
         animal.update();
         animal.draw(groundY, pixelSize, pixelColor);
