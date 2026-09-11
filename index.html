@@ -338,7 +338,7 @@
       pointer-events: none;
     }
 
-    /* 時鐘與日期顯示區 (Discord 按鈕上方) */
+    /* 時鐘與日期顯示區 (固定高度與行高消除二次抖動) */
     .time-display-wrapper {
       width: 100%;
       height: 65px;
@@ -361,6 +361,8 @@
     .date-display {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       font-size: 0.85rem;
+      line-height: 1.2rem;
+      height: 1.2rem;
       font-weight: 600;
       letter-spacing: 1.2px;
       color: var(--text-color);
@@ -371,11 +373,13 @@
     .timezone-clock {
       font-family: 'Orbitron', sans-serif;
       font-size: 1.15rem;
+      line-height: 1.4rem;
+      height: 1.4rem;
       font-weight: 700;
       letter-spacing: 1.5px;
-      color: #ffffff; /* 確保時鐘字體為白色 */
+      color: #ffffff;
       cursor: default;
-      padding: 2px 10px;
+      padding: 0 10px;
       border: none;
       background: transparent;
     }
@@ -656,43 +660,47 @@
 
       .date-display {
         font-size: 0.7rem;
+        height: 1rem;
+        line-height: 1rem;
       }
 
       .timezone-clock {
         font-size: 0.95rem;
+        height: 1.2rem;
+        line-height: 1.2rem;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- 左上角切換暗底/亮底按鈕 -->
-  <button class="theme-toggle-btn" id="themeToggleBtn">Dark</button>
+  <!-- 左上角切換暗底/亮底按鈕 (禁止翻譯) -->
+  <button class="theme-toggle-btn" id="themeToggleBtn" translate="no">Dark</button>
 
-  <!-- 左下角返回首頁按鈕 -->
-  <button class="back-home-btn" id="backHomeBtn">Home</button>
+  <!-- 左下角返回首頁按鈕 (禁止翻譯) -->
+  <button class="back-home-btn" id="backHomeBtn" translate="no">Home</button>
 
-  <!-- 右上角固定標題 jnis -->
+  <!-- 右上角固定標題 jnis (禁止翻譯) -->
   <div class="top-right-wrapper">
-    <div class="top-right-logo" id="topLogo">jnis</div>
+    <div class="top-right-logo" id="topLogo" translate="no">jnis</div>
   </div>
 
   <div class="container" id="mainContainer">
     
     <!-- 舞台區域 -->
     <div class="content-stage">
-      <!-- 首頁內容 -->
-      <div class="hero-content" id="heroContent">
+      <!-- 首頁內容 (禁止翻譯) -->
+      <div class="hero-content" id="heroContent" translate="no">
         <div class="typewriter-wrapper" id="homeTitle">
           <h1 class="typewriter">jnis</h1>
         </div>
         <a href="javascript:void(0);" class="btn-jnii" id="btnJnii">@jnii2008</a>
       </div>
 
-      <!-- 第二頁選單 -->
-      <div class="links-menu" id="linksMenu">
+      <!-- 第二頁選單 (禁止翻譯) -->
+      <div class="links-menu" id="linksMenu" translate="no">
         
-        <!-- 日期與時鐘 (依據訪客電腦系統時間並顯示 Sep. 11, 2026 格式與 AM/PM) -->
+        <!-- 日期與時鐘 -->
         <div class="time-display-wrapper">
           <div class="date-display" id="dateDisplay">Sep. 11, 2026</div>
           <div class="timezone-clock" id="timezoneClock">10:28 PM</div>
@@ -724,7 +732,7 @@
       </div>
     </div>
 
-    <!-- 底部聯絡資訊 -->
+    <!-- 底部聯絡資訊 (此處保留可被 Google 翻譯) -->
     <div class="inquiry-wrapper">
       <div class="copied-toast pos-bottom" id="copiedToast">Copied!</div>
       <p class="inquiry-text init-fadeIn" id="inquiryText">
@@ -751,25 +759,33 @@
     const kaomojis = ['><', '(ﾉ∀`*)', '(≧∀≦)ゞ', 'ヾ(*´∀ ˋ*)ﾉ', '(*ﾟ∀ﾟ*)', '(;´༎ຶД༎ຶ`)', '( °3°)', '(つ´ω`)つ'];
     let kaomojiIndex = 0;
 
-    // ===== 滑鼠位置與靜置噴發愛心粒子系統 =====
+    // ===== 滑鼠位置與移動偵測噴發愛心粒子系統 =====
     let mouseX = window.innerWidth / 2;
     let mouseY = window.innerHeight / 2;
     let lastMouseX = mouseX;
     let lastMouseY = mouseY;
+    let isMoving = false;
+    let moveTimeout;
 
     document.addEventListener('mousemove', (e) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
-      // 移動時機率性或適量噴發愛心
-      if (Math.random() < 0.4) {
-        createHeartParticle(mouseX, mouseY);
-      }
-    });
 
-    // 靜置時持續噴發愛心
-    setInterval(() => {
-      createHeartParticle(mouseX, mouseY);
-    }, 180);
+      // 計算滑鼠是否有實際移動
+      const distance = Math.hypot(mouseX - lastMouseX, mouseY - lastMouseY);
+      if (distance > 2) {
+        isMoving = true;
+        createHeartParticle(mouseX, mouseY);
+
+        clearTimeout(moveTimeout);
+        moveTimeout = setTimeout(() => {
+          isMoving = false;
+        }, 100);
+      }
+
+      lastMouseX = mouseX;
+      lastMouseY = mouseY;
+    });
 
     function createHeartParticle(x, y) {
       const heart = document.createElement('div');
@@ -810,7 +826,7 @@
       
       const ampm = hours >= 12 ? 'PM' : 'AM';
       hours = hours % 12;
-      hours = hours ? hours : 12; // 0點顯示為 12
+      hours = hours ? hours : 12;
       
       const formattedHours = String(hours).padStart(2, '0');
       const formattedMinutes = String(minutes).padStart(2, '0');
