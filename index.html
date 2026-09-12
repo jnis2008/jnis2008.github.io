@@ -450,6 +450,7 @@
       z-index: 20;
     }
 
+    /* 桌機 Hover 展開邏輯 */
     @media (hover: hover) {
       .white-box-wrapper.yt-wrapper:hover .yt-sub-container {
         opacity: 1;
@@ -457,20 +458,43 @@
         transform: translateY(0);
       }
       
-      /* 滑過去時 YouTube 按鈕維持恆亮反轉 */
       .white-box-wrapper.yt-wrapper:hover .white-box {
         background-color: var(--hover-bg);
         color: var(--hover-text);
         box-shadow: 0 0 25px var(--box-shadow-color);
       }
 
-      /* 文字淡入淡出切換 */
       .white-box-wrapper.yt-wrapper:hover .yt-text-default {
         opacity: 0;
       }
       .white-box-wrapper.yt-wrapper:hover .yt-text-select {
         opacity: 1;
       }
+    }
+
+    /* 手機/觸控或點擊展開後的狀態邏輯 */
+    .white-box-wrapper.yt-wrapper.open .yt-sub-container {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    .white-box-wrapper.yt-wrapper.open .white-box {
+      background-color: var(--hover-bg);
+      color: var(--hover-text);
+      box-shadow: 0 0 25px var(--box-shadow-color);
+    }
+
+    .white-box-wrapper.yt-wrapper.open .yt-text-default {
+      opacity: 0;
+    }
+
+    .white-box-wrapper.yt-wrapper.open .yt-text-select {
+      opacity: 1;
+    }
+
+    .white-box-wrapper.yt-wrapper.open .yt-btn::before {
+      opacity: 1;
     }
 
     .yt-text-wrap {
@@ -524,7 +548,6 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* 繞圈光芒偽元素 */
     .yt-btn::before {
       content: '';
       position: absolute;
@@ -537,7 +560,6 @@
       transition: opacity 0.3s ease;
     }
 
-    /* 內層遮罩維持背景色，讓邊框能呈現光圈 */
     .yt-btn::after {
       content: '';
       position: absolute;
@@ -821,6 +843,7 @@
     const themeToggleBtn = document.getElementById('themeToggleBtn');
     const backHomeBtn = document.getElementById('backHomeBtn');
     const ytWrapper = document.getElementById('ytWrapper');
+    const ytTrigger = document.getElementById('ytTrigger');
     const timezoneClock = document.getElementById('timezoneClock');
     const dateDisplay = document.getElementById('dateDisplay');
 
@@ -834,13 +857,18 @@
     let lastMouseY = mouseY;
     let isMoving = false;
     let moveTimeout;
+    let lastParticleTime = 0; // 用於效能節流限制
 
     document.addEventListener('mousemove', (e) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
 
       const distance = Math.hypot(mouseX - lastMouseX, mouseY - lastMouseY);
-      if (distance > 2) {
+      const now = Date.now();
+      
+      // 增加時間差限制（最少間隔 30ms），避免高速移動時建立過多 DOM 造成卡頓
+      if (distance > 3 && (now - lastParticleTime) > 30) {
+        lastParticleTime = now;
         isMoving = true;
         createHeartParticle(mouseX, mouseY);
 
@@ -901,6 +929,21 @@
     setInterval(updateClockAndDate, 1000);
     updateClockAndDate();
 
+    // YouTube 點擊展開/收合控制（支援手機與觸控裝置）
+    ytTrigger.addEventListener('click', function(e) {
+      // 若裝置支援 hover 且滑鼠真正懸停時，讓桌機能保持預設 hover 行為
+      // 但在行動裝置上直接用 click 切換 .open 類別
+      ytWrapper.classList.toggle('open');
+      e.stopPropagation();
+    });
+
+    // 點擊畫面其他地方時自動收合 YouTube 選單
+    document.addEventListener('click', function(e) {
+      if (!ytWrapper.contains(e.target)) {
+        ytWrapper.classList.remove('open');
+      }
+    });
+
     btnJnii.addEventListener('click', function() {
       heroContent.classList.add('fade-out');
       inquiryText.classList.remove('init-fadeIn');
@@ -922,6 +965,7 @@
       linksMenu.classList.remove('active');
       topLogo.classList.remove('visible');
       backHomeBtn.classList.remove('visible');
+      ytWrapper.classList.remove('open');
       inquiryText.classList.add('inquiry-hidden');
 
       setTimeout(() => {
