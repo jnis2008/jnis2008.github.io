@@ -741,8 +741,8 @@
     
       <div class="links-menu" id="linksMenu" translate="no">
         
-   
-        <div class="time-display-wrapper">
+  
+      <div class="time-display-wrapper">
           <div class="date-display" id="dateDisplay">Sep. 11, 2026</div>
           <div class="timezone-clock" id="timezoneClock">10:28 PM</div>
         </div>
@@ -761,8 +761,8 @@
         <div class="white-box-wrapper">
           <a href="https://www.twitch.tv/jnii2008" target="_blank" class="white-box icon-hover-box">
             <span class="box-text">Twitch</span>
-            <svg class="box-logo" viewBox="0 0 512 512">
-              <path d="M416 32H96L32 96V416H160V512H256L352 416H480V96L416 32ZM432 384H352L256 480V384H128V64H432V384Z"/><polygon points="320,160 288,160 288,288 320,288"/><polygon points="192,160 160,160 160,288 192,288"/>
+            <svg class="box-logo" viewBox="0 0 24 24">
+              <path d="M2.149 0L.537 4.119v16.836h5.731V24h3.224l3.224-3.225h4.657l5.373-5.373V0H2.149zm19.284 14.299l-3.761 3.761h-5.373l-3.224 3.224v-3.224H4.836V2.686h16.597v11.613zM16.12 7.522h2.687v5.373H16.12V7.522zm-7.522 0h2.687v5.373H8.598V7.522z"/>
             </svg>
           </a>
         </div>
@@ -973,6 +973,7 @@
     });
 
 
+    inquiryText.classList.add('init-fadeIn');
     inquiryText.addEventListener('click', function() {
       navigator.clipboard.writeText('jnis550088@gmail.com').then(() => {
         copiedToast.classList.add('show');
