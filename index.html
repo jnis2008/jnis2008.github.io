@@ -464,14 +464,14 @@
       z-index: 20;
     }
 
-    @media (hover: hover) {
+   @media (hover: hover) {
       .white-box-wrapper.yt-wrapper:hover .yt-sub-container {
         opacity: 1;
         pointer-events: auto;
         transform: translateY(0);
       }
       
-      /* 滑過去時文字從 YouTube 變成 Select a channel */
+      /* 滑過去時文字從 YouTube 變成 Select a channel，強制不換行水平置中 */
       .white-box-wrapper.yt-wrapper:hover .yt-text {
         visibility: hidden;
         position: relative;
@@ -480,11 +480,11 @@
         content: "Select a channel";
         visibility: visible;
         position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        text-align: center;
-        font-size: 1.2rem; /* 配合長文字微調大小 */
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        white-space: nowrap;
+        font-size: 1.2rem;
       }
     }
 
@@ -747,7 +747,7 @@
           <div class="white-box" id="ytTrigger"><span class="yt-text">YouTube</span></div>
           <div class="yt-sub-container">
             <a href="https://www.youtube.com/@jnii2008" target="_blank" class="yt-btn">Main</a>
-            <a href="https://www.youtube.com/@%E5%82%91%E5%BC%BC4" target="_blank" class="yt-btn">VOD</a>
+            <a href="https://www.youtube.com/@%E5%82%91%E5%B0%BC4" target="_blank" class="yt-btn">VOD</a>
           </div>
         </div>
       </div>
