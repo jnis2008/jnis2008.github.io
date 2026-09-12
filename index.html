@@ -428,12 +428,20 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* 桌機 Hover 效果 */
+    /* 桌機 Hover 效果 (非 YouTube 按鈕) */
     @media (hover: hover) {
-      .white-box:hover {
+      .white-box:not(#ytTrigger):hover {
         background-color: var(--hover-bg);
         color: var(--hover-text);
         box-shadow: 0 0 25px var(--box-shadow-color);
+      }
+    }
+
+    /* 針對電腦版讓 YouTube 大按鈕不能點擊、維持預設樣式 */
+    @media (hover: hover) {
+      #ytTrigger {
+        cursor: default;
+        pointer-events: none;
       }
     }
 
@@ -453,7 +461,7 @@
       z-index: 20;
     }
 
-    /* 桌機 Hover 展開邏輯 */
+    /* 桌機 Hover 展開邏輯 (透過 wrapper 觸發，不點擊按鈕本體) */
     @media (hover: hover) {
       .white-box-wrapper.yt-wrapper:hover .yt-sub-container {
         opacity: 1;
