@@ -30,6 +30,7 @@
       --toast-color: #888888;
       --logo-hover-shadow: rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.6);
       --clock-color: #ffffff;
+      --twitch-logo-color: #ffffff;
     }
 
 
@@ -46,6 +47,7 @@
       --toast-color: #555555;
       --logo-hover-shadow: rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.4);
       --clock-color: #0d0d0d;
+      --twitch-logo-color: #0d0d0d;
     }
 
     * {
@@ -218,7 +220,7 @@
       }
     }
 
- 
+  
     .container {
       display: flex;
       flex-direction: column;
@@ -388,7 +390,7 @@
       transition: color 0.4s ease;
     }
 
- 
+  
     .white-box-wrapper {
       width: 100%;
       position: relative;
@@ -444,6 +446,32 @@
       background-color: var(--hover-bg);
       color: var(--hover-text);
       box-shadow: 0 0 25px var(--box-shadow-color);
+    }
+
+    /* Twitch 按鈕懸停特效與 Logo 切換 */
+    .twitch-box .twitch-text {
+      transition: opacity 0.2s ease;
+    }
+
+    .twitch-box .twitch-logo {
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      fill: var(--twitch-logo-color);
+      opacity: 0;
+      transform: scale(0.8);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .twitch-box:hover .twitch-text,
+    .twitch-box:active .twitch-text {
+      opacity: 0;
+    }
+
+    .twitch-box:hover .twitch-logo,
+    .twitch-box:active .twitch-logo {
+      opacity: 1;
+      transform: scale(1);
     }
 
   
@@ -631,6 +659,11 @@
         border-width: 2px;
       }
 
+      .twitch-box .twitch-logo {
+        width: 20px;
+        height: 20px;
+      }
+
       .yt-sub-container {
         gap: 8px;
         padding-top: 5px;
@@ -722,7 +755,12 @@
 
         <!-- Twitch -->
         <div class="white-box-wrapper">
-          <a href="https://www.twitch.tv/jnii2008" target="_blank" class="white-box">Twitch</a>
+          <a href="https://www.twitch.tv/jnii2008" target="_blank" class="white-box twitch-box">
+            <span class="twitch-text">Twitch</span>
+            <svg class="twitch-logo" viewBox="0 0 240 240">
+              <path d="M19.316 0L0 48.291v144.873h60.367v48.291h48.291l48.291-48.291h36.218L240 144.873V0H19.316zm201.214 135.253l-33.804 33.804h-48.291l-33.804 33.804v-33.804H62.785V28.975h157.745v106.278zM96.582 72.43h24.146v57.955H96.582V72.43zm60.367 0h24.146v57.955h-24.146V72.43z"/>
+            </svg>
+          </a>
         </div>
 
         <!-- Instagram -->
@@ -818,7 +856,7 @@
       heart.addEventListener('animationend', () => heart.remove());
     }
 
- 
+  
     function updateClockAndDate() {
       const now = new Date();
       
@@ -829,7 +867,7 @@
       const yearStr = now.getFullYear();
       dateDisplay.textContent = `${monthStr} ${dayStr}, ${yearStr}`;
 
- 
+
       let hours = now.getHours();
       const minutes = now.getMinutes();
       
