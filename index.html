@@ -77,7 +77,7 @@
       padding: 0 20px;
     }
 
-    
+  
     .heart-particle {
       position: fixed;
       width: 10px;
@@ -470,12 +470,22 @@
         pointer-events: auto;
         transform: translateY(0);
       }
-    }
-
-    .white-box-wrapper.yt-wrapper.open .yt-sub-container {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translateY(0);
+      
+      /* 滑過去時文字從 YouTube 變成 Select a channel */
+      .white-box-wrapper.yt-wrapper:hover .yt-text {
+        visibility: hidden;
+        position: relative;
+      }
+      .white-box-wrapper.yt-wrapper:hover .yt-text::after {
+        content: "Select a channel";
+        visibility: visible;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        text-align: center;
+        font-size: 1.2rem; /* 配合長文字微調大小 */
+      }
     }
 
     .yt-btn {
@@ -644,7 +654,7 @@
         border-width: 2px;
       }
 
-    
+     
       .inquiry-wrapper {
         padding-bottom: 50px;
       }
@@ -734,10 +744,10 @@
 
         <!-- YouTube -->
         <div class="white-box-wrapper yt-wrapper" id="ytWrapper">
-          <div class="white-box" id="ytTrigger">YouTube</div>
+          <div class="white-box" id="ytTrigger"><span class="yt-text">YouTube</span></div>
           <div class="yt-sub-container">
             <a href="https://www.youtube.com/@jnii2008" target="_blank" class="yt-btn">Main</a>
-            <a href="https://www.youtube.com/@%E5%82%91%E5%B0%BC4" target="_blank" class="yt-btn">VOD</a>
+            <a href="https://www.youtube.com/@%E5%82%91%E5%BC%BC4" target="_blank" class="yt-btn">VOD</a>
           </div>
         </div>
       </div>
@@ -762,7 +772,6 @@
     const themeToggleBtn = document.getElementById('themeToggleBtn');
     const backHomeBtn = document.getElementById('backHomeBtn');
     const ytWrapper = document.getElementById('ytWrapper');
-    const ytTrigger = document.getElementById('ytTrigger');
     const timezoneClock = document.getElementById('timezoneClock');
     const dateDisplay = document.getElementById('dateDisplay');
 
@@ -874,7 +883,6 @@
 
       setTimeout(() => {
         heroContent.classList.remove('fade-out');
-        ytWrapper.classList.remove('open');
 
         requestAnimationFrame(() => {
           inquiryText.classList.remove('inquiry-hidden');
@@ -904,18 +912,6 @@
 
       document.body.appendChild(kaomojiEl);
       kaomojiEl.addEventListener('animationend', () => kaomojiEl.remove());
-    });
-
-
-    ytTrigger.addEventListener('click', function(e) {
-      e.stopPropagation();
-      ytWrapper.classList.toggle('open');
-    });
-
-    document.getElementById('mainContainer').addEventListener('click', function(e) {
-      if (!ytWrapper.contains(e.target)) {
-        ytWrapper.classList.remove('image_209a11.png');
-      }
     });
 
 
