@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>About jnis</title>
   
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png">
 
   <meta property="og:type" content="website">
   <meta property="og:title" content="jnis">
@@ -853,7 +855,6 @@
       inquiryText.classList.add('inquiry-hidden');
 
       setTimeout(() => {
-        linksMenu.classList.remove('fade-out');
         linksMenu.classList.add('active');
         topLogo.classList.add('visible');
         backHomeBtn.classList.add('visible');
@@ -866,7 +867,6 @@
     });
 
     backHomeBtn.addEventListener('click', function() {
-      linksMenu.classList.add('fade-out');
       linksMenu.classList.remove('active');
       topLogo.classList.remove('visible');
       backHomeBtn.classList.remove('visible');
@@ -912,9 +912,9 @@
       ytWrapper.classList.toggle('open');
     });
 
-    document.addEventListener('click', function(e) {
+    document.getElementById('mainContainer').addEventListener('click', function(e) {
       if (!ytWrapper.contains(e.target)) {
-        ytWrapper.classList.remove('open');
+        ytWrapper.classList.remove('image_209a11.png');
       }
     });
 
