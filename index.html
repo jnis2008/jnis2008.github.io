@@ -30,7 +30,7 @@
       --toast-color: #888888;
       --logo-hover-shadow: rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.6);
       --clock-color: #ffffff;
-      --icon-logo-color: #0d0d0d; /* 深色主題下 hover 背景變白，故 Logo 顯示黑色 */
+      --icon-logo-color: #0d0d0d;
     }
 
 
@@ -47,7 +47,7 @@
       --toast-color: #555555;
       --logo-hover-shadow: rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.4);
       --clock-color: #0d0d0d;
-      --icon-logo-color: #ffffff; /* 淺色主題下 hover 背景變黑，故 Logo 顯示白色 */
+      --icon-logo-color: #ffffff;
     }
 
     * {
@@ -448,7 +448,6 @@
       box-shadow: 0 0 25px var(--box-shadow-color);
     }
 
-    /* 共通的 Logo 按鈕懸停特效與切換 */
     .icon-hover-box .box-text {
       transition: opacity 0.2s ease;
     }
@@ -763,7 +762,7 @@
           <a href="https://www.twitch.tv/jnii2008" target="_blank" class="white-box icon-hover-box">
             <span class="box-text">Twitch</span>
             <svg class="box-logo" viewBox="0 0 512 512">
-              <path d="M96,0L32,64V416H160V512H256L352,416H480V96L416,32H96ZM432,384H336L240,480H384H128V64H432V384ZM320,160H288V288H320V160ZM192,160H160V288H192V160Z"/>
+              <path d="M416 32H96L32 96V416H160V512H256L352 416H480V96L416 32ZM432 384H352L256 480V384H128V64H432V384Z"/><polygon points="320,160 288,160 288,288 320,288"/><polygon points="192,160 160,160 160,288 192,288"/>
             </svg>
           </a>
         </div>
